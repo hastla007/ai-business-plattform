@@ -15,9 +15,9 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 
 ### B02 — Mandanten- und Rechteprüfung absichern
 
-- [ ] Feature-Tests für Zugriffe über fremde Organisations-IDs anlegen: Chatverlauf, Agentenläufe, Dokumente, Gruppen, Tickets, Freigaben, Modellprofile und Nodes.
-- [ ] Gruppen- und Eigentümerrechte für Anzeigen, Ändern und Löschen von Dokumenten mit erlaubten und verweigerten Fällen abdecken.
-- [ ] Rechte erneut prüfen, wenn eine Mitgliedschaft zwischen Job-Einreihung und Job-Ausführung entzogen wird.
+- [x] Feature-Tests für fremde Organisations-IDs ergänzen: Chatverläufe, Agentenläufe, Dokumente, Assistenten, Gruppen, Tickets, Freigaben, Modellprofile und Nodes (`TenantResourceIsolationTest`).
+- [x] Gruppen- und Eigentümerrechte für Anzeigen, Ändern und Löschen von Dokumenten mit erlaubten und verweigerten Fällen abdecken (`DocumentAuthorizationTest`, `DocumentOwnershipAuthorizationTest`).
+- [x] Rechte im Job erneut prüfen, wenn die Mitgliedschaft zwischen Einreihung und Ausführung entzogen wird; Feature-Test deckt den abgelehnten Lauf ab (`RevokedMembershipJobTest`).
 - [x] Assistenten-ACLs und Prüfung des angeforderten Assistenten in Chat- und Agenten-APIs implementieren.
 - [x] Öffentliche Registrierung für SaaS durch Einladungen oder einen expliziten Deployment-Schalter begrenzen.
 
