@@ -32,7 +32,24 @@ services:
     image: redis:7-alpine
     command: redis-server --appendonly yes
     volumes: [redis_data:/data]
+  minio:
+    image: minio/minio:latest
+    profiles: ["object-storage"]
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-local-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-local-minio-secret}
+    ports: ["9000:9000", "9001:9001"]
+    volumes: [minio_data:/data]
+  model-node:
+    image: ollama/ollama:latest
+    profiles: ["model-node"]
+    ports: ["11434:11434"]
+    volumes: [ollama_data:/root/.ollama]
+    restart: unless-stopped
 volumes:
   postgres_data:
   redis_data:
   app_storage:
+  minio_data:
+  ollama_data:

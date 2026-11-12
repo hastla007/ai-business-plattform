@@ -116,8 +116,8 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 
 - [x] Eingabe-/Ausgabetoken und Embedding-Nutzung pro Nutzer, Organisation, Profil und Lauf speichern.
 - [x] Budgets und Limits pro Modellprofil validieren und vor Modellaufruf prüfen.
-- [ ] Verhalten bei erreichtem Limit festlegen: blockieren oder nur nach Adminfreigabe fortsetzen.
-- [ ] Adminübersicht für Verbrauch nach Nutzer/Profil, Restbudget und abgewiesene Requests vervollständigen. (Aktuell sind Gesamtverbrauch und Grundmetriken sichtbar.)
+- [x] Erreichtes Tages- oder Kostenlimit blockiert weitere Modellaufrufe mit HTTP 429; Limits können nicht durch eine Adminfreigabe umgangen werden.
+- [x] Adminübersicht um Verbrauch je Nutzer/Profil, verbleibendes Tagesbudget und abgewiesene Requests ergänzen.
 
 **Abnahme:** Testläufe oberhalb des Limits werden vor einem kostenpflichtigen Provideraufruf abgewiesen und im Audit nachvollziehbar erfasst.
 
@@ -136,11 +136,11 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 ### B14 — Monitoring und Diagnose
 
 - [x] HTTP-Request-Logs mit Request-ID, Methode, Pfad, Status und Laufzeit ergänzen; keine Prompts oder Secrets protokollieren.
-- [ ] Organisations-ID und Agentenlauf-ID sicher in strukturierte Logs aufnehmen.
+- [x] Organisations-ID und Agentenlauf-ID nach Organisationsauflösung sicher in strukturierte Logs aufnehmen.
 - [x] Basis-Metriken für Chat-Aufrufe, Agentenläufe, offene Freigaben, Online-Nodes und Tokenverbrauch ergänzen.
-- [ ] API-Latenz, Queue-Alter, Fehlerquoten und Provider-Nutzung als Zeitreihen ergänzen.
-- [ ] Readiness- und Liveness-Probes voneinander trennen.
-- [ ] Alarmgrenzen und Runbook für Datenbank-, Redis-, Provider- und Node-Ausfälle dokumentieren.
+- [x] Chat-p95-Latenz, Queue-Alter, fehlgeschlagene Agentenläufe sowie stündlichen Token-/Kostenverbrauch je Profil erfassen.
+- [x] `/api/health/live` als Liveness und `/api/health/ready` als DB-/Redis-Readiness trennen.
+- [x] Alarmgrenzen und Runbook für Datenbank-, Redis-, Provider- und Node-Ausfälle dokumentieren (`ops/OPERATIONS-MONITORING.md`).
 
 **Abnahme:** Ein simulierter Ausfall ist anhand von Metriken/Logs erkennbar und das Runbook führt zu einer klaren Wiederherstellung.
 

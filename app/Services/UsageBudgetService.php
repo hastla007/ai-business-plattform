@@ -1,6 +1,6 @@
 <?php
 namespace App\Services;
-use App\Models\{ModelProfile,Organization,UsageEvent};
+use App\Models\{AuditEvent,ModelProfile,Organization,UsageEvent};
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 class UsageBudgetService {
@@ -12,7 +12,7 @@ class UsageBudgetService {
   $rateIn=max(0,(int)($options[$inputRateKey]??$options['cost_micros_per_1k_input']??0));
   $rateOut=$kind==='embedding'?0:max(0,(int)($options['cost_micros_per_1k_output']??0));
   $reserveCost=(int)ceil($estimatedInput*$rateIn/1000+$maxOutput*$rateOut/1000);
-  return DB::transaction(function()use($org,$user,$profile,$requestId,$runId,$estimatedInput,$maxOutput,$reserveCost,$settings,$options,$rateIn,$rateOut){
+  try{return DB::transaction(function()use($org,$user,$profile,$requestId,$runId,$estimatedInput,$maxOutput,$reserveCost,$settings,$options,$rateIn,$rateOut){
    Organization::whereKey($org)->lockForUpdate()->firstOrFail();$day=now()->startOfDay();$month=now()->startOfMonth();
    $used=UsageEvent::where('organization_id',$org)->where('created_at','>=',$day)->sum(DB::raw('input_tokens + output_tokens'));
    $daily=(int)($settings['daily_token_limit']??0);if($daily>0&&$used+$estimatedInput+$maxOutput>$daily)throw new HttpException(429,'Organization daily token budget reached.');
@@ -26,7 +26,7 @@ class UsageBudgetService {
    if($profileMonthly>0){$profileCost=UsageEvent::where('organization_id',$org)->where('model_profile_id',$profile->id)->where('created_at','>=',$month)->sum('cost_micros');if($profileCost+$reserveCost>$profileMonthly)throw new HttpException(429,'Model profile monthly cost budget reached.');}
    $event=UsageEvent::create(['organization_id'=>$org,'user_id'=>$user,'model_profile_id'=>$profile->id,'agent_run_id'=>$runId,'request_id'=>$requestId,'input_tokens'=>$estimatedInput,'output_tokens'=>$maxOutput,'cost_micros'=>$reserveCost,'status'=>'pending','created_at'=>now()]);
    return ['event'=>$event,'max_output_tokens'=>$maxOutput,'rate_in'=>$rateIn,'rate_out'=>$rateOut];
-  });
+  });}catch(HttpException $e){AuditEvent::create(['organization_id'=>$org,'user_id'=>$user,'action'=>'usage.rejected','request_id'=>$requestId,'metadata'=>['profile_id'=>$profile->id,'run_id'=>$runId,'kind'=>$kind,'status'=>$e->getStatusCode(),'reason'=>mb_substr($e->getMessage(),0,160),'created_at'=>now()]]);throw $e;}
  }
  public function reserveEmbedding(ModelProfile $profile,string $requestId,array $texts,?int $userId=null):array {
   return $this->reserve((int)$profile->organization_id,$userId,$profile,$requestId,[['role'=>'user','content'=>implode(PHP_EOL,$texts)]],null,'embedding');
