@@ -21,6 +21,10 @@ Danach `http://localhost:8000` öffnen.
 - Modellknoten-Status für lokale Verarbeitung
 - Responsive Layout für Desktop und Mobilgeräte
 
+## Entwickler-Checkliste
+
+Die umsetzbaren Arbeitspakete, API-Aufteilung und Abnahmepunkte stehen in der [Entwickler-Checkliste](ENTWICKLUNGS-CHECKLISTE.md).
+
 ## Prototyp-Status
 
-Die Oberfläche nutzt Beispieldaten. Chat, Dokumentimport, Indexierung, Anmeldung, Mandantentrennung, Modelladapter, Agentenlaufzeit und Audit-Protokoll sind noch nicht mit einem Backend verbunden. Die Architektur- und Implementierungsroadmap steht in der beigefügten Projektspezifikation.
+Die Oberfläche nutzt Beispieldaten. Chat, Dokumentimport, Indexierung, Anmeldung, Mandantentrennung, Modelladapter, Agentenlaufzeit und Audit-Protokoll sind noch nicht mit einem Backend verbunden.
