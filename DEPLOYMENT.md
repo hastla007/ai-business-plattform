@@ -4,7 +4,7 @@
 
 1. Install Docker Engine and the Docker Compose plugin.
 2. Copy this repository release and run `cp .env.example .env`.
-3. Set unique values for `DB_PASSWORD`; the installer generates missing `APP_KEY` and `REDIS_PASSWORD`. Keep `APP_DEBUG=false`.
+3. Set unique values for `DB_PASSWORD`; the installer generates missing `APP_KEY` and replaces the example database/Redis passwords. Keep `APP_DEBUG=false`. Set `APP_REGISTRATION_ENABLED=false` after creating the first owner or use invitation onboarding. Browser clients use Sanctum's same-origin session cookie and CSRF flow.
 4. Run `./ops/install-onprem.sh`. The app listens on port 8080; put TLS termination in front of it.
 5. For the first admin, use the registration API. The initial account creates an organization owner.
 
@@ -24,4 +24,4 @@ Tag each release with an immutable version. Deploy using `./ops/deploy.sh 1.0.1`
 
 ## Health and diagnosis
 
-The HTTP probe is `GET /api/health`. Compose reports app, worker, and web-container health; a scheduler service runs configured retention jobs. Use `docker compose logs --tail=200 app worker nginx` to inspect service errors. The current package exposes health and structured application logs; metrics dashboards, alert routing, automated license provisioning, and browser admin views are not included yet.
+The HTTP probe is `GET /api/health`. Compose reports app, worker, and web-container health; a scheduler service runs configured retention jobs. Use `docker compose logs --tail=200 app worker nginx` to inspect service errors. The package exposes health, request logs, tenant-scoped operational metrics, and browser admin views for models, nodes, membership and usage. Alert routing, automated license provisioning, and practical production acceptance remain open.

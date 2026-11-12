@@ -38,9 +38,10 @@ class DocumentController extends Controller {
  }
  private function authorizeDocument(Request $r,Document $d){
   abort_unless((int)$d->organization_id===(int)$r->attributes->get('organization_id'),404);
-  if($d->access_scope==='owner')abort_unless((int)$d->created_by===(int)$r->user()->id,403);
-  if($d->access_scope==='group')abort_unless(Group::whereKey($d->group_id)->whereHas('members',fn($q)=>$q->where('users.id',$r->user()->id))->exists(),403);
-  if($d->access_scope==='organization')abort_unless(in_array($r->attributes->get('organization_role'),['owner','admin'],true),403);
+  $admin=in_array($r->attributes->get('organization_role'),['owner','admin'],true);
+  if($d->access_scope==='owner')abort_unless($admin||(int)$d->created_by===(int)$r->user()->id,403);
+  if($d->access_scope==='group')abort_unless($admin||((int)$d->created_by===(int)$r->user()->id&&Group::where('organization_id',$d->organization_id)->whereKey($d->group_id)->whereHas('members',fn($q)=>$q->where('users.id',$r->user()->id))->exists()),403);
+  if($d->access_scope==='organization')abort_unless($admin,403);
  }
  public function destroy(Request $r,Document $document){
   $this->authorizeDocument($r,$document);Storage::disk($document->disk)->delete($document->path);$document->delete();return response()->noContent();

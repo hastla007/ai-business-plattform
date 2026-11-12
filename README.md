@@ -1,14 +1,14 @@
 # AI Business Plattform
 
-Klickbarer UI-Prototyp und Laravel-Backend-MVP für einen lokalen Firmenassistenten mit kontrolliertem Unternehmenswissen.
+Laravel-Backend und angebundene Weboberfläche für einen Firmenassistenten mit kontrolliertem Unternehmenswissen.
 
 ## Starten
 
 1. Docker und Docker Compose installieren.
-2. Kopie von .env.example als .env anlegen.
-3. Einen Schlüssel mit docker compose run --rm app php artisan key:generate erzeugen.
+2. Kopie von `.env.example` als `.env` anlegen. Öffentliche Registrierung ist standardmäßig aus; für die initiale lokale Einrichtung `APP_REGISTRATION_ENABLED=true` setzen und nach Anlage des ersten Owners wieder auf `false` stellen.
+3. Einen Schlüssel mit `php artisan key:generate` erzeugen und in `.env` eintragen.
 4. docker compose up --build ausführen.
-5. API unter http://localhost:8000/api/v1, Oberfläche unter http://localhost:8000/index.html öffnen.
+5. Oberfläche und API unter der in Compose konfigurierten URL öffnen.
 
 Das Compose-Profil startet Laravel, Queue-Worker, PostgreSQL mit pgvector und Redis. Für Modellaufrufe AI_BASE_URL auf einen erreichbaren OpenAI-kompatiblen lokalen Endpunkt setzen.
 
@@ -16,7 +16,7 @@ Das Compose-Profil startet Laravel, Queue-Worker, PostgreSQL mit pgvector und Re
 
 - POST /api/v1/register: name, email, password (mindestens 12 Zeichen), organization_name
 - POST /api/v1/login: email und password
-- Bei geschützten Routen Bearer-Token und X-Organization-Id mitsenden.
+- Die Weboberfläche nutzt Sanctum-Cookies und CSRF-Schutz. API-Clients können weiterhin Bearer-Token und `X-Organization-Id` verwenden.
 - Gruppenverwaltung: GET/POST /api/v1/groups sowie PUT/DELETE /api/v1/groups/{group}/members/{user} für Owner und Admins.
 - POST /api/v1/documents: multipart-Datei (txt, md, pdf oder docx)
 - POST /api/v1/chat: message und optional conversation_id
@@ -24,7 +24,7 @@ Das Compose-Profil startet Laravel, Queue-Worker, PostgreSQL mit pgvector und Re
 
 ## Stand und Grenzen
 
-Das Backend enthält Dokumentensuche, Freigabe-API, Node-Routing und Produktionspakete. Chat-, Dokument-, Freigabe- und Admin-Oberflächen sowie Streaming, Kostenlimits, Monitoring und praktische Produktionsabnahmen sind noch offen. Die Entwicklungs-Compose-Datei ist für lokale Entwicklung; für On-Premise/SaaS siehe [DEPLOYMENT.md](DEPLOYMENT.md).
+Die Weboberfläche umfasst Login/Registrierung, Chat mit Quellen und Verlauf, Dokumente, Agenten, Freigaben sowie Adminbereiche für Modelle, Nodes, Gruppen, Mitglieder und Nutzungsmetriken. Serverseitiges SSE-Streaming, Organisations-/Nutzer-/Profilbudgets, Einladungen und Feature-Tests sind implementiert. PHP-/Datenbanktests und Produktionsabnahmen müssen noch in CI bzw. einer Deployment-Umgebung verifiziert werden. Alarmierung, Lizenzierung und ein Composer-Lockfile bleiben offen. Die Entwicklungs-Compose-Datei ist für lokale Entwicklung; für On-Premise/SaaS siehe [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Entwickler-Checkliste
 

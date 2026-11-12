@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev libzi
  && rm -rf /var/lib/apt/lists/*
 WORKDIR /var/www/html
 COPY --from=vendor /app /var/www/html
-COPY deploy/entrypoint.sh /usr/local/bin/engine-entrypoint\nCOPY deploy/www.conf /usr/local/etc/php-fpm.d/zz-engine.conf
+COPY deploy/entrypoint.sh /usr/local/bin/engine-entrypoint
+COPY deploy/www.conf /usr/local/etc/php-fpm.d/zz-engine.conf
 RUN chmod +x /usr/local/bin/engine-entrypoint && chown -R www-data:www-data storage bootstrap/cache
 USER www-data
 EXPOSE 9000

@@ -34,7 +34,7 @@ class IngestDocument implements ShouldQueue {
    $profile=ModelProfile::where('organization_id',$d->organization_id)->where('is_active',true)->firstOrFail();
    $chunks=mb_str_split($text,1200);
    foreach(array_chunk($chunks,16) as $batchNumber=>$batch){
-    $vectors=$provider->embed($batch,$profile);
+    $vectors=$provider->embed($batch,$profile,(int)$d->created_by);
     foreach($batch as $i=>$chunk){
      $vec=$vectors[$i]??null;if(!$vec)throw new \RuntimeException('Embedding batch incomplete');
      $encoded='['.implode(',',array_map(fn($x)=>(string)(float)$x,$vec)).']';
