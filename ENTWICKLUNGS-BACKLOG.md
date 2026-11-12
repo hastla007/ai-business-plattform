@@ -7,8 +7,8 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 ### B01 — CI und reproduzierbare Installation
 
 - [x] CI-Workflow für Composer-Installation, PHP-Syntaxprüfung, Frontend-Prüfung und Migration gegen PostgreSQL mit pgvector ergänzen.
-- [ ] Lockfile für Composer-Abhängigkeiten erzeugen und im Image verwenden.
-- [ ] Frische Installation aus leerer Datenbank und Update von der vorherigen Version als CI-Jobs abbilden.
+- [x] Composer-Lockfile erzeugen, versionieren und im Image mit `composer install` verwenden.
+- [x] Frische Installation aus leerer Datenbank sowie Upgrade vom vorherigen Schema (Rollback der Additivmigration und erneutes Migrieren) in CI abbilden.
 - [x] Produktions-Compose-Konfiguration mit einer Compose-Validierung prüfen.
 
 **Abnahme:** CI wird bei Pull Requests ausgeführt; ein frischer Clone kann mit dokumentierten Schritten gebaut und migriert werden.
@@ -156,7 +156,7 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 
 ## Noch offen
 
-Die PHP-, PostgreSQL-/pgvector- und Docker-Schritte sind als CI angelegt, wurden in dieser Umgebung aber noch nicht ausgeführt. Composer-Lockfile, Migrationsupgrade auf einer echten Vorversion, vollständige Negativtests aller Mandantenobjekte, Client-Abbruch/Retry, Lizenzierung und Alarmierung bleiben offen.
+Der CI-Lauf hat Composer-Installation/Validierung, PHP-/JS-/Python-Syntax, Docker-Build, beide Compose-Konfigurationen, frische Migration, Upgradepfad und PHPUnit auf PostgreSQL/pgvector bestanden. Ein Upgrade aus einer veröffentlichten Vorversion und produktive On-Prem/SaaS-Abnahmen bleiben offen.
 
 ## Gemeinsame Definition of Done
 

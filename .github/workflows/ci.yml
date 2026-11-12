@@ -28,13 +28,7 @@ jobs:
           extensions: mbstring, pdo_pgsql, zip
           coverage: none
       - run: composer install --no-interaction --prefer-dist
-      - name: Export resolved lockfile for import
-        run: echo "LOCK_B64_START"; base64 composer.lock; echo; echo "LOCK_B64_END"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: composer-lock
-          path: composer.lock
-          retention-days: 1
+      - run: composer validate --no-check-publish
       - run: node --check app.js
       - run: python -m py_compile node-agent/agent.py
       - run: find app routes database/migrations tests -name '*.php' -print0 | xargs -0 -n1 php -l
