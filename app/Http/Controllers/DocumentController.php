@@ -14,6 +14,13 @@ class DocumentController extends Controller {
     ->orWhereIn('group_id',\Illuminate\Support\Facades\DB::table('group_memberships')->select('group_id')->where('organization_id',$org)->where('user_id',$user));
   })->latest()->paginate(25);
  }
+ public function reindex(Request $r){
+  $org=(int)$r->attributes->get('organization_id');
+  abort_unless(\App\Models\ModelProfile::where('organization_id',$org)->where('is_active',true)->exists(),422,'An active model profile is required.');
+  $ids=Document::where('organization_id',$org)->whereIn('status',['indexed','failed','queued'])->pluck('id');
+  foreach($ids as $id)IngestDocument::dispatch((int)$id)->onQueue('documents');
+  return response()->json(['queued'=>$ids->count()],202);
+ }
  public function store(Request $r){return $this->saveUpload($r,null);}
  public function update(Request $r,Document $document){$this->authorizeDocument($r,$document);return $this->saveUpload($r,$document);}
  private function saveUpload(Request $r,?Document $old){
@@ -27,7 +34,7 @@ class DocumentController extends Controller {
   $file=$d['file'];$hash=hash_file('sha256',$file->getRealPath());
   $disk=config('filesystems.default','local');$path=Storage::disk($disk)->putFileAs('organizations/'.$org,$file,Str::uuid().'.'.$file->getClientOriginalExtension());
   if($old){
-   Storage::disk($old->disk)->delete($old->path);$old->chunks()->delete();
+   Storage::disk($old->disk)->delete($old->path);
    $old->update(['path'=>$path,'name'=>$file->getClientOriginalName(),'content_hash'=>$hash,'version'=>$old->version+1,'status'=>'queued','error_message'=>null,'mime_type'=>$file->getMimeType(),'size'=>$file->getSize()]);
    $document=$old;
   }else{

@@ -12,8 +12,8 @@ class OpenAiCompatibleProvider implements ModelProvider {
    ->when(config('services.ai.api_key'),fn($h)=>$h->withToken(config('services.ai.api_key')))
    ->timeout((int)config('services.ai.timeout',60))->retry((int)config('services.ai.max_retries',2),250);
  }
- private function post(ModelProfile $profile,string $path,array $body):array {
-  $node=$this->router->route($profile,'internal',$body['model']??null);
+ private function post(ModelProfile $profile,string $path,array $body,bool $embedding=false):array {
+  $node=$this->router->route($profile,'internal',$body['model']??null,$embedding?'embedding':'chat',$embedding?(int)$profile->embedding_dimensions:null);
   if($node){$result=$this->transport->dispatch($node,['method'=>'POST','path'=>$path,'body'=>$body]);$result['_node_id']=$node->id;return $result;}
   return $this->client($profile)->post($path,$body)->throw()->json();
  }
@@ -49,9 +49,9 @@ class OpenAiCompatibleProvider implements ModelProvider {
  public function embed(array $texts,ModelProfile $profile,?int $userId=null):array {
   $reservation=$this->budget->reserveEmbedding($profile,(string)Str::uuid(),$texts,$userId);
   try{
-   $r=$this->post($profile,'/v1/embeddings',['model'=>$profile->embedding_model,'input'=>$texts]);
+   $r=$this->post($profile,'/v1/embeddings',['model'=>$profile->embedding_model,'input'=>$texts],true);
    if(isset($r['error']))throw new RuntimeException('Model node reported an error.');
-   $vectors=collect($r['data']??[])->sortBy('index')->pluck('embedding')->all();
+   $vectors=collect($r['data']??[])->sortBy('index')->pluck('embedding')->all();$expected=(int)$profile->embedding_dimensions;if($expected!==1536)throw new RuntimeException('The current vector index supports exactly 1536 dimensions.');foreach($vectors as $vector)if(!is_array($vector)||count($vector)!==$expected)throw new RuntimeException('Embedding dimension does not match the configured vector index.');if(count($vectors)!==count($texts))throw new RuntimeException('Embedding response count does not match the request.');
    $usage=$r['usage']??['prompt_tokens'=>(int)ceil(mb_strlen(implode(PHP_EOL,$texts))/4)];
    $this->budget->complete($reservation['event'],$usage,$reservation);
    return $vectors;

@@ -123,11 +123,11 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 
 ### B13 — Lokale Embeddings pro Node
 
-- [ ] Node-Fähigkeitsmodell um Embedding-Modelle und Dimensionen ergänzen.
+- [x] Node-Fähigkeitsmodell um Embedding-Modelle und Dimensionen erweitern und im Heartbeat validieren.
 - [x] Embedding-Anfragen über Modellprofil und Node-Router routen.
-- [ ] Separates Routingmodell für Embeddings mit Dimensionsprüfung und Re-Embedding ergänzen.
-- [ ] Modell-/Dimensionskompatibilität mit bestehenden Vektoren prüfen.
-- [ ] Re-Embedding und Indexwechsel ohne gemischte Vektordimensionen unterstützen.
+- [x] Embedding-Routing nach eigenständigen Node-Fähigkeiten und Dimensionsprüfung ergänzen; Re-Embedding ersetzt Chunks atomar.
+- [x] Modell-/Dimensionskompatibilität mit dem festen `vector(1536)`-Index erzwingen.
+- [x] Re-Embedding schreibt erst nach vollständiger Dimensionprüfung um und ersetzt den bisherigen Chunk-Satz atomar; andere Dimensionen werden abgewiesen.
 
 **Abnahme:** Dokumente können mit einem lokal registrierten Embedding-Modell indexiert werden; inkompatible Vektoren werden abgewiesen.
 

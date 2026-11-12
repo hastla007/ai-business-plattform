@@ -26,7 +26,7 @@ class NodeController extends Controller {
  }
  public function heartbeat(Request $r){
   $node=$r->attributes->get('node');
-  $d=$r->validate(['version'=>'required|string|max:40','capabilities'=>'required|array','capabilities.models'=>'array','capabilities.models.*'=>'string|max:120','hardware_profile'=>'nullable|array']);
+  $d=$r->validate(['version'=>'required|string|max:40','capabilities'=>'required|array','capabilities.models'=>'array','capabilities.models.*'=>'string|max:120','capabilities.embedding_models'=>'nullable|array','capabilities.embedding_models.*'=>'string|max:120','capabilities.embedding_dimensions'=>'nullable|array','capabilities.embedding_dimensions.*'=>'integer|distinct|in:1536','hardware_profile'=>'nullable|array']);
   $node->update(['status'=>'online','last_seen_at'=>now(),'version'=>$d['version'],'capabilities'=>$d['capabilities'],'hardware_profile'=>$d['hardware_profile']??$node->hardware_profile]);
   return response()->json(['status'=>'online','node_id'=>$node->id]);
  }

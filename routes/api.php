@@ -27,7 +27,7 @@ Route::middleware(['auth:sanctum','organization'])->prefix('v1')->group(function
   Route::put('/groups/{group}/members/{user}',[\App\Http\Controllers\GroupController::class,'addMember']);
   Route::delete('/groups/{group}/members/{user}',[\App\Http\Controllers\GroupController::class,'removeMember']);
   Route::get('/approvals',[ApprovalController::class,'index']);
-  Route::get('/tickets',[ApprovalController::class,'tickets']);
+  Route::get('/tickets',[ApprovalController::class,'tickets']);\n  Route::post('/documents/reindex',[DocumentController::class,'reindex']);
   Route::post('/agent-runs/{run}/approve',[ApprovalController::class,'decide']);
   Route::get('/nodes',[NodeController::class,'index']);
   Route::post('/nodes/enroll',[NodeController::class,'enroll']);
