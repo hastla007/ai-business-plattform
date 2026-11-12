@@ -28,6 +28,11 @@ jobs:
           extensions: mbstring, pdo_pgsql, zip
           coverage: none
       - run: composer install --no-interaction --prefer-dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: composer-lock
+          path: composer.lock
+          retention-days: 1
       - run: node --check app.js
       - run: python -m py_compile node-agent/agent.py
       - run: find app routes database/migrations tests -name '*.php' -print0 | xargs -0 -n1 php -l
@@ -35,6 +40,30 @@ jobs:
       - run: cp .env.example .env
       - run: docker compose -f docker-compose.prod.yml -f docker-compose.onprem.yml config --quiet
       - run: docker compose -f docker-compose.prod.yml -f docker-compose.saas.yml config --quiet
+      - run: php artisan migrate:fresh --force
+        env:
+          APP_ENV: testing
+          APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: engine_test
+          DB_USERNAME: engine
+          DB_PASSWORD: engine
+          CACHE_STORE: array
+          SESSION_DRIVER: array
+      - run: php artisan migrate:rollback --step=1 --force
+        env:
+          APP_ENV: testing
+          APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: engine_test
+          DB_USERNAME: engine
+          DB_PASSWORD: engine
+          CACHE_STORE: array
+          SESSION_DRIVER: array
       - run: php artisan migrate --force
         env:
           APP_ENV: testing
