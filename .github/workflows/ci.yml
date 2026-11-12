@@ -28,6 +28,8 @@ jobs:
           extensions: mbstring, pdo_pgsql, zip
           coverage: none
       - run: composer install --no-interaction --prefer-dist
+      - name: Export resolved lockfile for import
+        run: echo "LOCK_B64_START"; base64 -w0 composer.lock; echo; echo "LOCK_B64_END"
       - uses: actions/upload-artifact@v4
         with:
           name: composer-lock
