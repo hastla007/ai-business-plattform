@@ -27,6 +27,9 @@ jobs:
           php-version: "8.4"
           extensions: mbstring, pdo_pgsql, zip
           coverage: none
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: composer install --no-interaction --prefer-dist
       - run: composer validate --no-check-publish
       - run: node --check app.js
@@ -88,12 +91,13 @@ jobs:
         run: |
           ./ops/install-onprem.sh
           curl --fail --retry 30 --retry-connrefused --retry-delay 2 http://127.0.0.1:8080/api/health/ready
-          docker compose -f docker-compose.prod.yml -f docker-compose.onprem.yml exec -T app sh -c 'printf backup-restore-ok > /var/www/html/storage/app/restore-sentinel.txt'
+          before_checksum=$(docker compose -f docker-compose.prod.yml -f docker-compose.onprem.yml exec -T app php /var/www/html/ops/backup-restore-fixture.php seed)
           ./ops/backup.sh
           db_backup=$(find backups -name 'database-*.sql' -print -quit)
           files_backup=$(find backups -name 'files-*.tar.gz' -print -quit)
           test -n "$db_backup" && test -n "$files_backup"
           ./ops/restore.sh "$db_backup" "$files_backup"
           curl --fail --retry 30 --retry-connrefused --retry-delay 2 http://127.0.0.1:8080/api/health/ready
-          docker compose -f docker-compose.prod.yml -f docker-compose.onprem.yml exec -T app sh -c 'test "$(cat /var/www/html/storage/app/restore-sentinel.txt)" = backup-restore-ok'
+          after_checksum=$(docker compose -f docker-compose.prod.yml -f docker-compose.onprem.yml exec -T app php /var/www/html/ops/backup-restore-fixture.php verify)
+          test "$before_checksum" = "$after_checksum"
           docker compose -f docker-compose.prod.yml -f docker-compose.onprem.yml down -v

@@ -35,8 +35,8 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 
 ### B04 — Produktionsinstallation und Wiederherstellung abnehmen
 
-- [ ] On-Premise-Installation in einer leeren Umgebung inklusive Schlüsselgenerierung, Migration und Healthcheck durchführen.
-- [ ] Backup und Restore auf einer isolierten Instanz durchführen und Datenbank, Quelldateien sowie Vektoren vergleichen.
+- [x] CI-Smoke-Test führt On-Premise-Installation aus leerer Datenbank mit Schlüsselgenerierung, Migration und Readiness-Healthcheck durch.
+- [x] Isolierter CI-Stack sichert und restauriert Datenbank, Quelldatei, 1536-dimensionale Vektoren und Chatverlauf; Prüfsummen werden vor/nach Restore verglichen.
 - [ ] SaaS-Variante mit verwalteter PostgreSQL/pgvector-, Redis- und S3-kompatibler Speicherung deployen.
 - [x] TLS-Terminierung, Upload-Grenzen (50 MiB), nicht privilegierten Container-Benutzer, Secrets und Wiederanlauf nach Neustart dokumentieren (`DEPLOYMENT.md`).
 - [ ] Versionsmigration und Rollback mit einer echten Vorversion durchspielen; Rollbackgrenzen der Datenbankmigration festhalten.
@@ -160,8 +160,8 @@ Der CI-Lauf hat Composer-Installation/Validierung, PHP-/JS-/Python-Syntax, Docke
 
 ## Gemeinsame Definition of Done
 
-- [ ] Jede API-Änderung hat dokumentierte Request-/Response-Beispiele und Fehlercodes.
-- [ ] Jede Berechtigungsänderung hat positive und negative Tests.
+- [x] Neue und vorhandene API-Routen, Rollen, Request-/Response-Beispiele und Fehlercodes sind in `docs/API.md` dokumentiert.
+- [x] Berechtigungsänderungen sind mit erlaubten und verweigerten Feature-Tests abgesichert, einschließlich Quelldownload und Re-Indexierungsrolle.
 - [ ] Migrationen funktionieren auf leerer Datenbank und mit einer unterstützten Vorversion.
 - [ ] Keine Secrets, personenbezogenen Inhalte oder vollständigen Prompts in Logs oder Commits.
 - [ ] Die Entwickler-Checkliste wird erst nach Code und Abnahme aktualisiert.

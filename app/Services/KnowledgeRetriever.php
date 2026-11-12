@@ -17,7 +17,7 @@ class KnowledgeRetriever {
    $sourceFilter=' AND d.knowledge_source_id IN ('.implode(',',array_fill(0,count($allowedSourceIds),'?')).')';
    $sourceBindings=array_map('intval',$allowedSourceIds);
   }
-  $semantic=DB::select("SELECT c.id,c.document_id,c.content,c.source_locator,d.name AS document_name,(c.embedding <=> ?::vector) AS distance FROM document_chunks c JOIN documents d ON d.id=c.document_id WHERE $scope $sourceFilter AND d.status = 'indexed' AND d.embedding_model = ? AND c.embedding IS NOT NULL ORDER BY c.embedding <=> ?::vector LIMIT ?",array_merge([$v,$org,$user,$user],$sourceBindings,[$p->embedding_model,$v,$limit*3]));
+  $semantic=DB::select("SELECT c.id,c.document_id,c.content,c.source_locator,d.name AS document_name,(c.embedding <=> ?::vector) AS distance FROM document_chunks c JOIN documents d ON d.id=c.document_id WHERE $scope $sourceFilter AND d.status = 'indexed' AND d.embedding_model = ? AND c.embedding IS NOT NULL AND vector_dims(c.embedding) = 1536 ORDER BY c.embedding <=> ?::vector LIMIT ?",array_merge([$v,$org,$user,$user],$sourceBindings,[$p->embedding_model,$v,$limit*3]));
   $keyword=DB::select("SELECT c.id,c.document_id,c.content,c.source_locator,d.name AS document_name,1.0 AS distance FROM document_chunks c JOIN documents d ON d.id=c.document_id WHERE $scope $sourceFilter AND d.status = 'indexed' AND d.embedding_model = ? AND to_tsvector('simple',c.content) @@ plainto_tsquery('simple',?) LIMIT ?",array_merge([$org,$user,$user],$sourceBindings,[$p->embedding_model,$q,$limit*3]));
   return collect($semantic)->concat($keyword)->unique('id')->take($limit)->map(fn($r)=>['document_id'=>$r->document_id,'document'=>$r->document_name,'locator'=>$r->source_locator,'content'=>$r->content])->values()->all();
  }
