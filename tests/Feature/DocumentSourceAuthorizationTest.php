@@ -16,7 +16,8 @@ class DocumentSourceAuthorizationTest extends TestCase {
   Membership::create(['organization_id'=>$otherOrg->id,'user_id'=>$other->id,'role'=>'owner']);
   $contents='authorized source fixture';$path='organizations/'.$org->id.'/source.txt';Storage::disk('local')->put($path,$contents);
   $document=Document::create(['organization_id'=>$org->id,'created_by'=>$owner->id,'name'=>'source.txt','disk'=>'local','path'=>$path,'content_hash'=>hash('sha256',$contents),'version'=>1,'classification'=>'internal','access_scope'=>'organization','status'=>'indexed','mime_type'=>'text/plain','size'=>strlen($contents)]);
-  $this->actingAs($owner,'sanctum')->get('/api/v1/documents/'.$document->id.'/source',['X-Organization-Id'=>(string)$org->id])->assertOk()->assertSeeText($contents);
+  $download=$this->actingAs($owner,'sanctum')->get('/api/v1/documents/'.$document->id.'/source',['X-Organization-Id'=>(string)$org->id]);
+  $download->assertOk();$this->assertStringContainsString($contents,$download->streamedContent());
   $this->actingAs($other,'sanctum')->getJson('/api/v1/documents/'.$document->id.'/source',['X-Organization-Id'=>(string)$otherOrg->id])->assertNotFound();
  }
 }
