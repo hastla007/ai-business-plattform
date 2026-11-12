@@ -43,8 +43,7 @@ Die Liste setzt die Projektbeschreibung in umsetzbare Arbeitspakete um. Der aktu
 - [x] Pro Anfrage eine request_id und pro Agentenlauf eine run_id erzeugen.
 - [x] Antwortstatus, Quellen und Modellmetadaten über die API zurückgeben.
 - [ ] Tatsächliche Modellknoten-Metadaten an die UI zurückgeben.
-- [x] Modell- und Nutzungsmetadaten speichern.
-- [ ] Laufzeitmessung im Audit-Protokoll ergänzen.
+- [x] Laufzeit- und Nutzungsmetadaten im Audit-Protokoll speichern.
 - [x] Geheimnisse, Zugangsdaten und vollständige vertrauliche Prompts aus Logs ausschließen.
 - [ ] Gesprächs- und Aufbewahrungsrichtlinien konfigurierbar machen.
 
@@ -83,7 +82,7 @@ Die Liste setzt die Projektbeschreibung in umsetzbare Arbeitspakete um. Der aktu
 - [x] Agentenlauf, Schritte und Fehler mit redigierten Metadaten protokollieren.
 - [x] Maximale Schrittzahl und Laufzeit verbindlich erzwingen.
 - [x] Wissensagent bereitstellen: freigegebene interne Dokumente suchen und Quellen nennen.
-- [ ] Dokumentenagent bereitstellen: klassifizieren, Informationen extrahieren und Entwürfe erstellen.
+- [x] Dokumentenagent bereitstellen: klassifizieren, Informationen extrahieren und Entwürfe erstellen.
 - [ ] Ticket-Agent zunächst nur lesend betreiben und Antwortvorschläge erstellen.
 
 **Abnahmepunkt:** Der Wissensagent recherchiert über freigegebene Dokumente und kann keine Daten oder externen Systeme ändern.
