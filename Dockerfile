@@ -6,5 +6,6 @@ COPY composer.json ./
 RUN composer install --no-interaction --prefer-dist --no-dev --no-scripts
 COPY . .
 RUN mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache && composer dump-autoload --optimize --no-dev && chown -R www-data:www-data storage bootstrap/cache
+RUN printf 'upload_max_filesize=64M\npost_max_size=64M\n' > /usr/local/etc/php/conf.d/uploads.ini
 EXPOSE 8000
 CMD ["php","artisan","serve","--host=0.0.0.0","--port=8000"]

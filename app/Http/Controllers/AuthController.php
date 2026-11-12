@@ -1,6 +1,6 @@
 <?php
 namespace App\Http\Controllers;
-use App\Models\{Assistant,Membership,ModelProfile,Organization,User};
+use App\Models\{Assistant,Membership,ModelProfile,Organization,Tool,User};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -16,6 +16,7 @@ class AuthController extends Controller {
    ModelProfile::create(['organization_id'=>$o->id,'name'=>'Lokales Modell','provider_key'=>'openai-compatible','model'=>config('services.ai.chat_model'),'embedding_model'=>config('services.ai.embedding_model'),'base_url'=>config('services.ai.base_url'),'is_active'=>true]);
    $a=Assistant::create(['organization_id'=>$o->id,'name'=>'Wissensagent','slug'=>'knowledge-agent','is_active'=>true]);
    $a->versions()->create(['version'=>1,'purpose'=>'Read-only company knowledge search','system_instructions'=>'Answer in the user language. Use only supplied excerpts for company facts and cite sources. Say when evidence is insufficient.','allowed_models'=>[],'allowed_knowledge_sources'=>[],'allowed_tools'=>['search_knowledge'],'max_steps'=>3,'timeout_seconds'=>60,'approval_policy'=>'never_write','retention_policy'=>'organization_default','is_published'=>true]);
+   Tool::create(['organization_id'=>$o->id,'name'=>'search_knowledge','input_schema'=>['type'=>'object','required'=>['query'],'additionalProperties'=>false,'properties'=>['query'=>['type'=>'string','minLength'=>1,'maxLength'=>12000]]],'is_read_only'=>true,'is_active'=>true]);
    return [$u,$o];
   });
   return response()->json(['token'=>$u->createToken('api')->plainTextToken,'organization'=>['id'=>$o->id,'name'=>$o->name]],201);

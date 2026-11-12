@@ -15,8 +15,9 @@ class RunKnowledgeAgent implements ShouldQueue {
   $run=AgentRun::findOrFail($this->runId);$run->update(['status'=>'running','started_at'=>now()]);$v=AssistantVersion::findOrFail($run->assistant_version_id);
   try{
    if($v->max_steps<2||$v->max_steps>3||$v->timeout_seconds>90)throw new \RuntimeException('Agent limits exceed runtime');
+   set_time_limit((int)$v->timeout_seconds);
    $allowed=$v->allowed_tools??[];if(!in_array('search_knowledge',$allowed,true))throw new \RuntimeException('Tool not allowed');
-   $arguments=$registry->validate('search_knowledge',['query'=>$run->input],$allowed);
+   $arguments=$registry->validate('search_knowledge',['query'=>$run->input],$allowed,$run->organization_id);
    $sources=$search->search($arguments['query'],$run->organization_id,$run->user_id,6);
    AgentRunEvent::create(['agent_run_id'=>$run->id,'type'=>'tool.completed','metadata'=>['tool'=>'search_knowledge','result_count'=>count($sources)]]);
    $context=collect($sources)->map(fn($s,$i)=>'[S'.($i+1).'] '.$s['document'].' '.$s['locator']."\n".$s['content'])->implode("\n\n");
