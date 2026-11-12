@@ -1,6 +1,6 @@
 # Entwickler-Checkliste
 
-Die Liste setzt die Projektbeschreibung in umsetzbare Arbeitspakete um. Der aktuelle Stand ist ein statischer UI-Prototyp; Chat, Dokumentimport und Modellknoten verwenden noch Beispieldaten. Die ersten Backend-Bausteine sind ergänzt. Häkchen markieren im Repository implementierte Codepunkte; nicht ausgeführte Abnahmepunkte bleiben offen.
+Stand: Backend-Arbeiten der Phasen 1–3 sowie Implementierungen der Punkte 6–8 aus Phasen 4–6. Häkchen bedeuten, dass Code oder Betriebsunterlagen im Repository vorhanden sind. UI- und Laufzeitabnahmen sind nicht als erledigt markiert.
 
 ## Phase 1 — Lokaler vertikaler Prototyp
 
@@ -12,27 +12,26 @@ Die Liste setzt die Projektbeschreibung in umsetzbare Arbeitspakete um. Der aktu
 - [x] Firmen, Nutzer, Mitgliedschaften, Standorte und Rollenbasis implementieren.
 - [x] Firmen- und Dokumentrechte serverseitig prüfen; alle Firmenobjekte mandantengebunden abfragen.
 - [x] Docker-Compose-Entwicklungsstack für App, Queue-Worker, PostgreSQL und Redis mit persistentem lokalem Dateispeicher einrichten.
-- [ ] Separaten Objektspeicher-Dienst und optionalen Modellknoten als Compose-Dienste ergänzen.
+- [ ] Separaten Objektspeicher-Dienst und optionalen Modellknoten als Entwicklungs-Compose-Dienste ergänzen.
 - [x] Persistente Volumes für Datenbank und Quelldokumente konfigurieren.
 - [x] Konfiguration über Umgebungsvariablen laden; keine Schlüssel oder Zugangsdaten ins Repository schreiben.
-- [x] Datenbankschema und Migrationen für die unten aufgeführten Kernobjekte erstellen.
+- [x] Datenbankschema und Migrationen für Kernobjekte erstellen.
 
-**Abnahmepunkt:** Eine Firmeninstanz startet lokal mit Docker; Nutzer können sich anmelden und sehen ausschließlich ihre Firma und deren Daten.
+**Abnahmepunkt:** Eine Firmeninstanz startet lokal mit Docker; Anmeldung, Isolation und Wiederherstellung wurden noch nicht abgenommen.
 
 ### 2. Modelladapter und Modellprofile
 
 - [x] Provider-Schnittstelle für Chat und Embeddings definieren.
 - [ ] Streaming-Schnittstelle und Streaming-Implementierung ergänzen.
 - [x] Embedding-Schnittstelle bereitstellen.
-- [ ] Transport-Schnittstelle für entfernte Modellknoten ergänzen.
+- [x] Transport-Schnittstelle für entfernte Modellknoten ergänzen.
 - [x] Einen lokalen Modellserver über einen Adapter anbinden.
 - [ ] Streaming- und nicht-streamende Antworten unterstützen.
 - [x] Timeouts, begrenzte Retries und verständliche Providerfehler abbilden.
 - [ ] Nutzungs- und Kostenlimits durchsetzen.
-- [ ] Modellprofile und Provider-Konfiguration in der Admin-Oberfläche verwalten.
-- [x] Modellzugriffe so abstrahieren, dass ein Wechsel des Providers keine Änderungen an der Chatlogik erfordert.
-
-**Abnahmepunkt:** Laravel kann über ein Modellprofil mit einem lokalen Modell chatten; Provider können hinter derselben Schnittstelle ausgetauscht werden.
+- [x] Modellprofile über eine Admin-API verwalten.
+- [ ] Modellprofile in der Admin-Oberfläche verwalten.
+- [x] Modellzugriffe so abstrahieren, dass Provider hinter derselben Schnittstelle ausgetauscht werden.
 
 ### 3. Chat, Speicherung und Audit
 
@@ -42,117 +41,112 @@ Die Liste setzt die Projektbeschreibung in umsetzbare Arbeitspakete um. Der aktu
 - [ ] Berechtigung für den ausgewählten Assistenten bei jeder Anfrage prüfen.
 - [x] Pro Anfrage eine request_id und pro Agentenlauf eine run_id erzeugen.
 - [x] Antwortstatus, Quellen und Modellmetadaten über die API zurückgeben.
-- [ ] Tatsächliche Modellknoten-Metadaten an die UI zurückgeben.
+- [x] Tatsächliche Modellknoten-ID bei gerouteten Antworten zurückgeben.
 - [x] Laufzeit- und Nutzungsmetadaten im Audit-Protokoll speichern.
 - [x] Geheimnisse, Zugangsdaten und vollständige vertrauliche Prompts aus Logs ausschließen.
-- [ ] Gesprächs- und Aufbewahrungsrichtlinien konfigurierbar machen.
+- [x] Aufbewahrungsfrist je Organisation konfigurierbar machen und Bereinigung planen.
 
-**Abnahmepunkt:** Ein angemeldeter Nutzer kann mit einem konfigurierten Modell chatten; Verlauf und Auditdaten sind der richtigen Firma zugeordnet.
+### Phase 2 — Unternehmenswissen (RAG)
 
-## Phase 2 — Unternehmenswissen (RAG)
-
-### 4. Dokumentenimport und Suche
+#### 4. Dokumentenimport und Suche
 
 - [x] Upload und Speicherung von Quelldateien mit Firmenbezug, Hash und Versionsnummer implementieren.
 - [x] Queue-Jobs für Textextraktion, Metadaten und Dokumentstatus einrichten.
 - [x] Dokumente in nachvollziehbare Abschnitte (Chunks) aufteilen.
-- [x] Embeddings über den Provider erzeugen und zusammen mit Zugriffsmetadaten in PostgreSQL/pgvector speichern.
+- [x] Embeddings über den Provider erzeugen und mit Zugriffsmetadaten in PostgreSQL/pgvector speichern.
 - [x] Keyword- und Vektorsuche kombinieren.
-- [x] Firmen- und Dokumentrechte (Organisation oder Dokumenteigentümer) bereits in der Suchabfrage durchsetzen.
+- [x] Firmen- und Dokumentrechte bereits in der Suchabfrage durchsetzen.
 - [x] Gruppenrechte und Gruppenmitgliedschaften in der Suchabfrage ergänzen.
 - [x] Treffer mit Dokumentname und Seiten- oder Abschnittsangabe in den Modellkontext übergeben.
 - [x] Quellen und Fundstellen in der Chat-API zurückgeben.
 - [ ] Quellen und Fundstellen in der Chat-UI anzeigen.
 - [x] Bei Dokumentänderung alte Chunks ersetzen; beim Löschen Quelldatei, Text und Vektoren entfernen.
-- [x] Importfehler, erneute Verarbeitung und Statusanzeige abbilden.
+- [x] Importfehler, erneute Verarbeitung und Statusanzeige über die API abbilden.
+- [x] Konfigurierbaren lokalen bzw. S3-kompatiblen Objektspeicher unterstützen.
 
-**Abnahmepunkt:** Antworten verwenden nur für den Nutzer freigegebene Dokumentstellen und zeigen überprüfbare Quellen an.
+### Phase 3 — Kontrollierter Agent
 
-## Phase 3 — Kontrollierter, schreibgeschützter Agent
+#### 5. Agent Runtime und Werkzeugregister
 
-### 5. Agent Runtime und Werkzeugregister
-
-- [x] Agent-Definitionen versionieren und Zweck, Anweisungen, erlaubte Modelle, Wissensquellen, Werkzeuge, maximale Schritte, Timeout, Budget, Freigabe- und Aufbewahrungsrichtlinie speichern.
-- [ ] Laufstatus queued, running, awaiting_approval, completed, failed und cancelled unterstützen.
-- [x] Längere Läufe als Queue-Jobs ausführen und ihren Zustand wiederherstellbar speichern.
-- [x] Werkzeugregister mit gespeichertem JSON-Schema und Parameterprüfung für search_knowledge implementieren.
-- [x] Firmenmitgliedschaft unmittelbar vor jedem asynchronen Werkzeugaufruf erneut prüfen.
-- [x] Nur registrierte, eng begrenzte Werkzeuge ausführen; keine freien Shell-Befehle, beliebigen HTTP-Aufrufe oder direkten Datenbankzugriffe bereitstellen.
-- [x] search_knowledge(query) als erstes schreibgeschütztes Werkzeug implementieren.
-- [x] Agentenlauf, Schritte und Fehler mit redigierten Metadaten protokollieren.
+- [x] Agent-Definitionen versionieren und Zweck, Anweisungen, Modelle, Wissensquellen, Werkzeuge, Laufzeit und Freigaberichtlinie speichern.
+- [x] Laufstatus queued, running, awaiting_approval, completed, failed und cancelled im Schema/API-Modell unterstützen.
+- [x] Längere Läufe als Queue-Jobs ausführen und Zustand speichern.
+- [x] Werkzeugregister mit JSON-Schema und Parameterprüfung für search_knowledge implementieren.
+- [x] Firmenmitgliedschaft unmittelbar vor asynchronen Werkzeugaufrufen erneut prüfen.
+- [x] Nur registrierte, eng begrenzte Werkzeuge ausführen.
+- [x] search_knowledge(query) als schreibgeschütztes Werkzeug implementieren.
+- [x] Agentenlauf, Schritte und redigierte Fehler-Metadaten protokollieren.
 - [x] Maximale Schrittzahl und Laufzeit verbindlich erzwingen.
-- [x] Wissensagent bereitstellen: freigegebene interne Dokumente suchen und Quellen nennen.
-- [x] Dokumentenagent bereitstellen: klassifizieren, Informationen extrahieren und Entwürfe erstellen.
+- [x] Wissensagent und Dokumentenagent bereitstellen.
 - [ ] Ticket-Agent zunächst nur lesend betreiben und Antwortvorschläge erstellen.
-
-**Abnahmepunkt:** Der Wissensagent recherchiert über freigegebene Dokumente und kann keine Daten oder externen Systeme ändern.
 
 ## Phase 4 — Freigaben und Schreibwerkzeuge
 
 ### 6. Menschliche Freigabe
 
-- [ ] Freigabeansicht und Status awaiting_approval in API und UI implementieren.
-- [ ] Freigabe an die konkrete Aktion und deren geprüfte Parameter binden.
-- [ ] Nutzerrechte unmittelbar vor der Ausführung erneut prüfen.
-- [ ] Schreibwerkzeuge wie create_ticket(...) oder send_email(...) erst nach Freigabe ausführen.
-- [ ] Freigabe, Ablehnung und Ausführung revisionsfähig protokollieren.
-- [ ] Doppelte Ausführung verhindern und abgelaufene Freigaben behandeln.
+- [ ] Freigabeansicht in der UI implementieren.
+- [x] Status awaiting_approval und Freigabe-/Ablehnungs-API implementieren.
+- [x] Freigabe an konkrete Aktion und kanonisch gehashte Parameter binden.
+- [x] Organisationsmitgliedschaft und Adminrolle unmittelbar vor Ausführung erneut prüfen.
+- [x] Schreibwerkzeug create_ticket nur nach expliziter Freigabe ausführen.
+- [x] Freigabe, Ablehnung, Ablauf und Ausführung in Agentenereignissen und Audit protokollieren.
+- [x] Doppelte Ausführung über Zeilensperren, eindeutige Freigabe-ID und Idempotenzschlüssel verhindern.
+- [x] Freigaben nach 15 Minuten ablaufen lassen und abgelehnte/abgelaufene Läufe beenden.
 
-**Abnahmepunkt:** Eine freigabepflichtige Aktion wird nur nach konkreter Nutzerfreigabe und erneuter Rechteprüfung ausgeführt.
+**Abnahmepunkt:** API-Pfad implementiert; UI- und Laufzeitabnahme offen.
 
 ## Phase 5 — Modellknoten und Routing
 
 ### 7. Node-Verwaltung
 
-- [ ] Node-Agent für Registrierung, Authentifizierung, Fähigkeiten und Heartbeats implementieren.
-- [ ] Knoten mit Firma, Standort, Datenschutzklasse, Modell, Hardwareprofil, maximaler Parallelität, Status, Version und letzter Verbindung erfassen.
-- [ ] Admin-Ansicht für Gesundheitsstatus, Modellprofile und letzte Verbindung ergänzen.
-- [ ] Modell-Router nach Firmenrichtlinie, Standort, erforderlichem Modell, Datenschutzklasse und Auslastung entscheiden lassen.
-- [ ] Für entfernte Standorte einen ausgehenden, authentifizierten und abgesicherten Kommunikationskanal verwenden; Modell-APIs nicht offen ins Internet stellen.
-- [ ] Fallback auf lokale oder Cloud-Modelle nur nach expliziter Firmenrichtlinie erlauben.
-- [ ] Jeden Mini-PC zunächst als eigenständigen Modellserver behandeln; Geräte nicht als gemeinsamen RAM-Pool modellieren.
-- [ ] Optional lokale Embedding-Modelle je Knoten unterstützen.
+- [x] Node-Agent über einmalig ausgegebenes Token registrieren und authentifizieren.
+- [x] Fähigkeiten, Heartbeats und Statuswechsel verarbeiten.
+- [x] Knoten mit Firma, Standort, Datenschutzklasse, Modellfähigkeiten, Hardwareprofil, Parallelität, Version und letzter Verbindung erfassen.
+- [x] Admin-API für Gesundheit, Modellprofile und letzte Verbindung bereitstellen.
+- [ ] Admin-Oberfläche für Knoten und Modellprofile ergänzen.
+- [x] Modell-Router berücksichtigt Firma, Standort, Modell, Datenschutzklasse, Aktualität und Auslastung.
+- [x] Remote-Kommunikation über ausgehendes Polling mit Node-Token; keine Modell-API wird öffentlich geöffnet.
+- [x] Cloud-Fallback nur bei expliziter Organisationsrichtlinie zulassen.
+- [x] Jeden Mini-PC als eigenständigen Modellserver behandeln.
+- [ ] Optionale lokale Embedding-Modelle je Knoten unterstützen.
 
-**Abnahmepunkt:** Mehrere Modellknoten lassen sich registrieren und Anfragen werden nach festgelegten Firmenregeln geroutet.
+**Abnahmepunkt:** Backend für Registrierung und Routing implementiert; Mehrknoten-Laufzeittest offen.
 
 ## Phase 6 — Produktionspakete und Betrieb
 
 ### 8. Deployment und Betrieb
 
-- [ ] Gemeinsame Compose-Basis und getrennte Produktions-Overrides für On-Premise und SaaS erstellen.
-- [ ] Persistente Speicherung und Backup-/Restore-Verfahren dokumentieren und automatisieren.
-- [ ] Versionierte Images, Updateverfahren und Rollback dokumentieren.
-- [ ] Healthchecks, Monitoring und nachvollziehbare Fehlerdiagnose einrichten.
-- [ ] Installation und Lizenzierung automatisieren.
-- [ ] Mandantentrennung, Datenaufbewahrung und erlaubte Verarbeitungsorte je Deployment-Variante konfigurieren.
-- [ ] Hybridbetrieb so gestalten, dass die Firma bewusst steuert, ob Fragen und Kontext die Kundenumgebung verlassen dürfen.
-
-**Abnahmepunkt:** Dieselbe Produktversion ist reproduzierbar On-Premise und als SaaS installierbar; Daten bleiben nach Neustarts erhalten und Wiederherstellung ist beschrieben.
+- [x] Produktions-Compose-Basis und On-Premise-/SaaS-Overrides erstellen.
+- [x] Persistente Speicherung sowie Backup-/Restore-Skripte und Anleitung ergänzen.
+- [x] Versionierte Images, Updateverfahren und Rollback-Skript dokumentieren.
+- [x] Health-Endpunkt, Container-Healthchecks und Fehlerdiagnose dokumentieren.
+- [ ] Monitoring-Dashboards und Alarmierung ergänzen.
+- [ ] Installation vollständig automatisieren und Lizenzierung ergänzen.
+- [x] Mandantentrennung, Aufbewahrungsfrist und erlaubte Datenverarbeitung je Organisation konfigurierbar machen.
+- [x] Hybrid-/Cloud-Fallback durch explizite Organisationsrichtlinie begrenzen.
+- [ ] Produktionsinstallation, Backup-Restore und SaaS-Deployment praktisch abnehmen.
 
 ## API-Mindestumfang
 
 - [x] POST /api/v1/chat
 - [x] POST /api/v1/agents/{agent}/runs
 - [x] GET /api/v1/agent-runs/{run}
-- [ ] POST /api/v1/agent-runs/{run}/approve
+- [x] POST /api/v1/agent-runs/{run}/approve
 - [x] POST /api/v1/documents
-- [ ] GET /api/v1/nodes
-- [ ] POST /api/v1/nodes/enroll
-- [ ] POST /api/v1/nodes/heartbeat
+- [x] GET /api/v1/nodes
+- [x] POST /api/v1/nodes/enroll
+- [x] POST /api/v1/nodes/heartbeat
 
-## Kernobjekte für die Datenbank
+## Kernobjekte
 
 - [x] organizations, users, memberships, sites, nodes, model_profiles
 - [x] assistants, assistant_versions, tools, tool_credentials
 - [x] knowledge_sources, documents, document_chunks
 - [x] conversations, messages, agent_runs, agent_run_events
 - [x] approvals, audit_events
+- [x] node_commands, tickets
 
-## Zielreihenfolge
+## Noch offen
 
-1. Lokaler Prototyp: Laravel, Docker, ein Modell und einfacher Chat.
-2. RAG: Dokumentimport, Rechteprüfung, Suche und Quellen.
-3. Read-only-Agent: Werkzeugregister und Laufstatus.
-4. Freigaben: Approval-UI, Audit und erste Schreibaktion.
-5. Mehrere Nodes: Registrierung und regelbasiertes Routing.
-6. SaaS und Betrieb: Mandantentrennung, Backups, Updates und Monitoring.
+- Browser-Oberflächen, Streaming, Assistenten-ACL, Nutzungs-/Kostenlimits, lokale Embeddings und Lizenzierung.
+- Laufzeitabnahmen für Migration, Freigabefluss, Remote-Knoten, On-Premise, SaaS sowie Backup/Restore.

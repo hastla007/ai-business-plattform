@@ -1,14 +1,30 @@
 <?php
-use App\Http\Controllers\{AgentController,AuthController,ChatController,DocumentController};
+use App\Http\Controllers\{AgentController,ApprovalController,AuthController,ChatController,DocumentController,HealthController,ModelProfileController,NodeCommandController,NodeController,OrganizationSettingsController};
 use Illuminate\Support\Facades\Route;
+Route::get('/health',HealthController::class);
 Route::post('/v1/register',[AuthController::class,'register'])->middleware('throttle:5,1');
 Route::post('/v1/login',[AuthController::class,'login'])->middleware('throttle:10,1');
+Route::prefix('v1/nodes')->middleware('node.auth')->group(function(){
+ Route::post('/heartbeat',[NodeController::class,'heartbeat'])->middleware('throttle:60,1');
+ Route::get('/tasks',[NodeCommandController::class,'poll'])->middleware('throttle:120,1');
+ Route::post('/tasks/{command}/result',[NodeCommandController::class,'result'])->middleware('throttle:120,1');
+});
 Route::middleware(['auth:sanctum','organization'])->prefix('v1')->group(function () {
+ Route::get('/organization/settings',[OrganizationSettingsController::class,'show']);
  Route::middleware('organization.role:owner,admin')->group(function(){
+  Route::put('/organization/settings',[OrganizationSettingsController::class,'update']);
   Route::get('/groups',[\App\Http\Controllers\GroupController::class,'index']);
   Route::post('/groups',[\App\Http\Controllers\GroupController::class,'store']);
   Route::put('/groups/{group}/members/{user}',[\App\Http\Controllers\GroupController::class,'addMember']);
   Route::delete('/groups/{group}/members/{user}',[\App\Http\Controllers\GroupController::class,'removeMember']);
+  Route::get('/approvals',[ApprovalController::class,'index']);
+  Route::get('/tickets',[ApprovalController::class,'tickets']);
+  Route::post('/agent-runs/{run}/approve',[ApprovalController::class,'decide']);
+  Route::get('/nodes',[NodeController::class,'index']);
+  Route::post('/nodes/enroll',[NodeController::class,'enroll']);
+  Route::delete('/nodes/{node}',[NodeController::class,'disable']);
+  Route::get('/model-profiles',[ModelProfileController::class,'index']);
+  Route::put('/model-profiles/{profile}',[ModelProfileController::class,'update']);
  });
  Route::post('/logout',[AuthController::class,'logout']);
  Route::post('/chat',ChatController::class);
@@ -19,4 +35,5 @@ Route::middleware(['auth:sanctum','organization'])->prefix('v1')->group(function
  Route::get('/agents',[AgentController::class,'index']);
  Route::post('/agents/{assistant}/runs',[AgentController::class,'store']);
  Route::get('/agent-runs/{run}',[AgentController::class,'show']);
+ Route::post('/agent-runs/{run}/actions',[ApprovalController::class,'propose']);
 });

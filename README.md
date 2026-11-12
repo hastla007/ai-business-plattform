@@ -29,3 +29,9 @@ Die Checkliste markiert umgesetzte Backend-Arbeitspakete. Streaming, Admin-Oberf
 ## Entwickler-Checkliste
 
 Siehe [ENTWICKLUNGS-CHECKLISTE.md](ENTWICKLUNGS-CHECKLISTE.md).
+
+## Phases 4–6 implementation
+
+The repository includes guarded approval APIs for ticket creation, token-authenticated outbound-polling model nodes, profile routing, optional S3-compatible document storage, and production Compose files. See [ENTWICKLUNGS-CHECKLISTE.md](ENTWICKLUNGS-CHECKLISTE.md) for exact implementation status and [DEPLOYMENT.md](DEPLOYMENT.md) for install, backup/restore, update, and rollback instructions.
+
+Production deploys require a configured `.env`; do not commit it. The web/API service listens on port 8080 and uses a managed TLS proxy in production. Browser admin/chat/approval screens, metrics/alerting, license automation, and runtime acceptance checks remain open.

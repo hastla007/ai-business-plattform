@@ -25,13 +25,13 @@ class DocumentController extends Controller {
    Group::where('organization_id',$org)->whereKey($d['group_id'])->whereHas('members',fn($q)=>$q->where('users.id',$r->user()->id))->firstOrFail();
   }
   $file=$d['file'];$hash=hash_file('sha256',$file->getRealPath());
-  $path=Storage::disk('local')->putFileAs('organizations/'.$org,$file,Str::uuid().'.'.$file->getClientOriginalExtension());
+  $disk=config('filesystems.default','local');$path=Storage::disk($disk)->putFileAs('organizations/'.$org,$file,Str::uuid().'.'.$file->getClientOriginalExtension());
   if($old){
    Storage::disk($old->disk)->delete($old->path);$old->chunks()->delete();
    $old->update(['path'=>$path,'name'=>$file->getClientOriginalName(),'content_hash'=>$hash,'version'=>$old->version+1,'status'=>'queued','error_message'=>null,'mime_type'=>$file->getMimeType(),'size'=>$file->getSize()]);
    $document=$old;
   }else{
-   $document=Document::create(['organization_id'=>$org,'knowledge_source_id'=>$d['knowledge_source_id']??null,'created_by'=>$r->user()->id,'group_id'=>$d['group_id']??null,'name'=>$file->getClientOriginalName(),'disk'=>'local','path'=>$path,'content_hash'=>$hash,'version'=>1,'classification'=>'internal','access_scope'=>$d['access_scope']??'organization','status'=>'queued','mime_type'=>$file->getMimeType(),'size'=>$file->getSize()]);
+   $document=Document::create(['organization_id'=>$org,'knowledge_source_id'=>$d['knowledge_source_id']??null,'created_by'=>$r->user()->id,'group_id'=>$d['group_id']??null,'name'=>$file->getClientOriginalName(),'disk'=>$disk,'path'=>$path,'content_hash'=>$hash,'version'=>1,'classification'=>'internal','access_scope'=>$d['access_scope']??'organization','status'=>'queued','mime_type'=>$file->getMimeType(),'size'=>$file->getSize()]);
   }
   IngestDocument::dispatch($document->id)->onQueue('documents');
   return response()->json($document,202);

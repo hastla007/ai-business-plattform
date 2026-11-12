@@ -1,0 +1,47 @@
+services:
+  app:
+    image: ${APP_IMAGE:-ai-business-engine:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    env_file: .env
+    expose: ["9000"]
+    volumes: [engine_storage:/var/www/html/storage/app]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD","php","artisan","about"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  worker:
+    image: ${APP_IMAGE:-ai-business-engine:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    env_file: .env
+    command: ["php","artisan","queue:work","redis","--queue=default,documents,agents","--tries=3","--timeout=120"]
+    volumes: [engine_storage:/var/www/html/storage/app]
+    restart: unless-stopped
+    depends_on:
+      app: { condition: service_healthy }
+  scheduler:
+    image: ${APP_IMAGE:-ai-business-engine:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    env_file: .env
+    command: ["php","artisan","schedule:work"]
+    volumes: [engine_storage:/var/www/html/storage/app]
+    restart: unless-stopped
+    depends_on:
+      app: { condition: service_healthy }
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports: ["8080:8080"]
+    restart: unless-stopped
+    depends_on:
+      app: { condition: service_healthy }
+volumes:
+  engine_storage:
