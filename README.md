@@ -1,30 +1,30 @@
 # AI Business Plattform
 
-Ein erster klickbarer Produktprototyp für einen lokalen Firmenassistenten mit kontrolliertem Unternehmenswissen.
+Klickbarer UI-Prototyp und Laravel-Backend-MVP für einen lokalen Firmenassistenten mit kontrolliertem Unternehmenswissen.
 
 ## Starten
 
-Die App ist als einzelne statische Datei umgesetzt. Öffne `index.html` direkt im Browser oder starte einen lokalen Webserver, zum Beispiel:
+1. Docker und Docker Compose installieren.
+2. Kopie von .env.example als .env anlegen.
+3. Einen Schlüssel mit docker compose run --rm app php artisan key:generate erzeugen.
+4. docker compose up --build ausführen.
+5. API unter http://localhost:8000/api/v1, Oberfläche unter http://localhost:8000/index.html öffnen.
 
-```bash
-python3 -m http.server 8000
-```
+Das Compose-Profil startet Laravel, Queue-Worker, PostgreSQL mit pgvector und Redis. Für Modellaufrufe AI_BASE_URL auf einen erreichbaren OpenAI-kompatiblen lokalen Endpunkt setzen.
 
-Danach `http://localhost:8000` öffnen.
+## API-Kurzstart
 
-## Enthalten
+- POST /api/v1/register: name, email, password (mindestens 12 Zeichen), organization_name
+- POST /api/v1/login: email und password
+- Bei geschützten Routen Bearer-Token und X-Organization-Id mitsenden.
+- POST /api/v1/documents: multipart-Datei (txt, md, pdf oder docx)
+- POST /api/v1/chat: message und optional conversation_id
+- POST /api/v1/agents/{id}/runs: input; Status über GET /api/v1/agent-runs/{id} abfragen
 
-- Workspace-Übersicht mit Aktivität, Dokumenten und Agenten
-- Assistenten-Ansicht mit Chat-Demo
-- Wissensbasis mit Suche und lokalem Datei-Upload-Demo
-- Agentenübersicht mit Leserechten und Freigabe-Hinweisen
-- Modellknoten-Status für lokale Verarbeitung
-- Responsive Layout für Desktop und Mobilgeräte
+## Stand und Grenzen
+
+Die Checkliste markiert umgesetzte Backend-Arbeitspakete. Streaming, Admin-Oberfläche für Modellprofile, Rollen-/Gruppenverwaltung, erweiterte Zugriffspolicies, SaaS-/On-Prem-Produktionshärtung und End-to-End-Tests sind noch offen. Der Chat-UI-Prototyp ist noch nicht mit diesen API-Routen verbunden. Compose verwendet Entwicklungswerte; Zugangsdaten und Schlüssel vor produktivem Betrieb ändern.
 
 ## Entwickler-Checkliste
 
-Die umsetzbaren Arbeitspakete, API-Aufteilung und Abnahmepunkte stehen in der [Entwickler-Checkliste](ENTWICKLUNGS-CHECKLISTE.md).
-
-## Prototyp-Status
-
-Die Oberfläche nutzt Beispieldaten. Chat, Dokumentimport, Indexierung, Anmeldung, Mandantentrennung, Modelladapter, Agentenlaufzeit und Audit-Protokoll sind noch nicht mit einem Backend verbunden.
+Siehe [ENTWICKLUNGS-CHECKLISTE.md](ENTWICKLUNGS-CHECKLISTE.md).
