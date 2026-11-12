@@ -24,7 +24,7 @@ Das Compose-Profil startet Laravel, Queue-Worker, PostgreSQL mit pgvector und Re
 
 ## Stand und Grenzen
 
-Die Weboberfläche umfasst Login/Registrierung, Chat mit Quellen und Verlauf, Dokumente, Agenten, Freigaben sowie Adminbereiche für Modelle, Nodes, Gruppen, Mitglieder und Nutzungsmetriken. Serverseitiges SSE-Streaming, Organisations-/Nutzer-/Profilbudgets, Einladungen und Feature-Tests sind implementiert. PHP-/Datenbanktests und Produktionsabnahmen müssen noch in CI bzw. einer Deployment-Umgebung verifiziert werden. Alarmierung, Lizenzierung und ein Composer-Lockfile bleiben offen. Die Entwicklungs-Compose-Datei ist für lokale Entwicklung; für On-Premise/SaaS siehe [DEPLOYMENT.md](DEPLOYMENT.md).
+Die Weboberfläche umfasst Login/Registrierung, Chat mit Quellen und Verlauf, Dokumente, Agenten, Freigaben sowie Adminbereiche für Modelle, Nodes, Gruppen, Mitglieder und Nutzungsmetriken. Serverseitiges SSE-Streaming, Organisations-/Nutzer-/Profilbudgets, Einladungen und Feature-Tests sind implementiert. PHP-/Datenbanktests laufen in CI; Produktionsabnahmen bleiben an die Zielumgebung gebunden. Planprüfung, Alarmgrenzen und ein Composer-Lockfile sind ergänzt; externe SaaS-/Produktionsabnahmen bleiben offen. Optionale lokale MinIO-/Ollama-Profile sind enthalten. Die Entwicklungs-Compose-Datei ist für lokale Entwicklung; für On-Premise/SaaS siehe [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Entwickler-Checkliste
 

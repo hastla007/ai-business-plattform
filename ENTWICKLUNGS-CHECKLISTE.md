@@ -1,6 +1,6 @@
 # Entwickler-Checkliste
 
-Stand: Implementierungen der Phasen 1–6 sowie ausgewählter P0–P2-Backlogpunkte. Häkchen bedeuten, dass der Code im Repository vorhanden ist; Laufzeit-, Sicherheits- und Deployment-Abnahmen bleiben separat offen.
+Stand: Implementierungen der Phasen 1–6 sowie Codearbeiten aus P0–P2. Code-Häkchen werden nach Implementierung gesetzt; reale Produktionsabnahmen bleiben separat offen. Häkchen bedeuten, dass der Code im Repository vorhanden ist; Laufzeit-, Sicherheits- und Deployment-Abnahmen bleiben separat offen.
 
 ## Phase 1 — Lokaler vertikaler Prototyp
 
@@ -12,7 +12,7 @@ Stand: Implementierungen der Phasen 1–6 sowie ausgewählter P0–P2-Backlogpun
 - [x] Firmen, Nutzer, Mitgliedschaften, Standorte und Rollenbasis implementieren.
 - [x] Firmen- und Dokumentrechte serverseitig prüfen; alle Firmenobjekte mandantengebunden abfragen.
 - [x] Docker-Compose-Entwicklungsstack für App, Queue-Worker, PostgreSQL und Redis mit persistentem lokalem Dateispeicher einrichten.
-- [ ] Separaten Objektspeicher-Dienst und optionalen Modellknoten als Entwicklungs-Compose-Dienste ergänzen.
+- [x] Separaten MinIO-Objektspeicher (`object-storage`-Profil) und optionalen Ollama-Modellknoten (`model-node`-Profil) als Entwicklungs-Compose-Dienste ergänzen.
 - [x] Persistente Volumes für Datenbank und Quelldokumente konfigurieren.
 - [x] Konfiguration über Umgebungsvariablen laden; keine Schlüssel oder Zugangsdaten ins Repository schreiben.
 - [x] Datenbankschema und Migrationen für Kernobjekte erstellen.
@@ -120,8 +120,8 @@ Stand: Implementierungen der Phasen 1–6 sowie ausgewählter P0–P2-Backlogpun
 - [x] Persistente Speicherung sowie Backup-/Restore-Skripte und Anleitung ergänzen.
 - [x] Versionierte Images, Updateverfahren und Rollback-Skript dokumentieren.
 - [x] Health-Endpunkt, Container-Healthchecks und Fehlerdiagnose dokumentieren.
-- [ ] Monitoring-Dashboards und Alarmierung ergänzen.
-- [ ] Installation vollständig automatisieren und Lizenzierung ergänzen.
+- [ ] Alarmierung in der Zielumgebung konfigurieren und Monitoring-Dashboard praktisch abnehmen. Metriken und Runbook sind im Code/Repo vorhanden.
+- [x] On-Prem-Installation automatisieren; SaaS-Testplan, Kontingente, Ablauf/Kulanz und Planprüfung ergänzen.
 - [x] Mandantentrennung, Aufbewahrungsfrist und erlaubte Datenverarbeitung je Organisation konfigurierbar machen.
 - [x] Hybrid-/Cloud-Fallback durch explizite Organisationsrichtlinie begrenzen.
 - [ ] Produktionsinstallation, Backup-Restore und SaaS-Deployment praktisch abnehmen.
@@ -148,4 +148,4 @@ Stand: Implementierungen der Phasen 1–6 sowie ausgewählter P0–P2-Backlogpun
 
 ## Noch offen
 
-Die verbleibenden Aufgaben sind nach Priorität und Abnahmekriterien im [Entwickler-Backlog](ENTWICKLUNGS-BACKLOG.md) aufgeschlüsselt. Häkchen werden erst nach Umsetzung und Abnahme gesetzt.
+Die externen Abnahmen (verwalteter SaaS-Deploy, Upgrade aus veröffentlichter Vorversion, Restore mit echten Mandanten-/Dokument-/Vektordaten und Produktionsinstallation) sind in B04 offen, bis sie in der Zielumgebung nachgewiesen sind. Weitere Detailpunkte stehen im [Entwickler-Backlog](ENTWICKLUNGS-BACKLOG.md).

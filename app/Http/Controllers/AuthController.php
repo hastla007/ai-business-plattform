@@ -11,7 +11,7 @@ class AuthController extends Controller {
   $d=$request->validate(['name'=>'required|string|max:120','email'=>'required|email|max:255|unique:users,email','password'=>'required|string|min:12','organization_name'=>'required|string|max:160']);
   [$u,$o]=DB::transaction(function()use($d){
    $u=User::create(['name'=>$d['name'],'email'=>strtolower($d['email']),'password'=>Hash::make($d['password'])]);
-   $o=Organization::create(['name'=>$d['organization_name'],'slug'=>Str::slug($d['organization_name']).'-'.Str::lower(Str::random(5)),'settings'=>['deployment_mode'=>'onprem','allow_cloud_fallback'=>false,'data_retention_days'=>365,'allowed_data_classes'=>['public','internal','confidential'],'plan'=>'trial']]);
+   $o=Organization::create(['name'=>$d['organization_name'],'slug'=>Str::slug($d['organization_name']).'-'.Str::lower(Str::random(5)),'settings'=>$this->initialOrganizationSettings()]);
    Membership::create(['organization_id'=>$o->id,'user_id'=>$u->id,'role'=>'owner']);
    ModelProfile::create(['organization_id'=>$o->id,'name'=>'Lokales Modell','provider_key'=>'openai-compatible','model'=>config('services.ai.chat_model'),'embedding_model'=>config('services.ai.embedding_model'),'base_url'=>config('services.ai.base_url'),'is_active'=>true]);
    $this->seedAssistant($o,'Wissensagent','knowledge-agent','Read-only company knowledge search','Answer in the user language. Use only supplied excerpts for company facts and cite sources. Say when evidence is insufficient.');
@@ -26,6 +26,14 @@ class AuthController extends Controller {
    return response()->json(['user'=>['id'=>$u->id,'name'=>$u->name,'email'=>$u->email],'organization'=>['id'=>$o->id,'name'=>$o->name]],201);
   }
   return response()->json(['token'=>$u->createToken('api')->plainTextToken,'organization'=>['id'=>$o->id,'name'=>$o->name]],201);
+ }
+ private function initialOrganizationSettings():array {
+  $mode=config('services.auth.deployment_mode','onprem');$settings=['deployment_mode'=>$mode,'allow_cloud_fallback'=>false,'data_retention_days'=>365,'allowed_data_classes'=>['public','internal','confidential']];
+  if(in_array($mode,['saas','hybrid'],true)){
+   $plan='trial';$limits=config('services.auth.plans.'.$plan,[]);
+   $settings=array_merge($settings,['plan'=>$plan,'license_status'=>'active','plan_expires_at'=>now()->addDays(max(1,(int)config('services.auth.trial_days',14)))->toIso8601String(),'plan_grace_days'=>7,'max_users'=>(int)($limits['max_users']??config('services.auth.trial_max_users',5)),'monthly_cost_limit_micros'=>(int)($limits['monthly_cost_limit_micros']??0)]);
+  }
+  return $settings;
  }
  private function seedAssistant(Organization $org,string $name,string $slug,string $purpose,string $instructions):void {
   $assistant=Assistant::create(['organization_id'=>$org->id,'name'=>$name,'slug'=>$slug,'is_active'=>true]);

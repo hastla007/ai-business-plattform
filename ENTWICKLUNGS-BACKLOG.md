@@ -38,7 +38,7 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 - [ ] On-Premise-Installation in einer leeren Umgebung inklusive Schlüsselgenerierung, Migration und Healthcheck durchführen.
 - [ ] Backup und Restore auf einer isolierten Instanz durchführen und Datenbank, Quelldateien sowie Vektoren vergleichen.
 - [ ] SaaS-Variante mit verwalteter PostgreSQL/pgvector-, Redis- und S3-kompatibler Speicherung deployen.
-- [ ] Sichere TLS-Konfiguration, Upload-Grenzen, Container-Benutzer, Secrets und Wiederanlauf nach Neustart dokumentieren.
+- [x] TLS-Terminierung, Upload-Grenzen (50 MiB), nicht privilegierten Container-Benutzer, Secrets und Wiederanlauf nach Neustart dokumentieren (`DEPLOYMENT.md`).
 - [ ] Versionsmigration und Rollback mit einer echten Vorversion durchspielen; Rollbackgrenzen der Datenbankmigration festhalten.
 
 **Abnahme:** Wiederhergestellte Instanz kann sich anmelden, Dokumente suchen und ein Chatgespräch fortsetzen; Healthchecks sind nach Neustart grün.
@@ -147,10 +147,10 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 ### B15 — SaaS-Onboarding und Lizenzierung
 
 - [x] Einladungen, Rollen und optionale Sitzplatzkontingente pro Organisation implementieren.
-- [ ] Planbasierte Mandantenanlage und SaaS-Kontingente ergänzen.
-- [ ] Lizenz- oder Planstatus serverseitig prüfen und Änderungen revisionsfähig protokollieren.
-- [ ] Ablauf, Kulanzphase und Sperrverhalten für abgelaufene Pläne festlegen.
-- [ ] Keine Lizenzprüfung in On-Premise-Installationen erzwingen, sofern die Produktentscheidung Offlinebetrieb vorsieht.
+- [x] SaaS-Neuanlagen erhalten einen konfigurierbaren Testplan mit Sitzplatz- und Kostenkontingenten.
+- [x] Lizenz-/Planstatus serverseitig prüfen und Planänderungen mit vorherigem/nachherigem Zustand auditieren.
+- [x] Ablauf, konfigurierbare Kulanzzeit und schreibgeschütztes Sperrverhalten nach Ablauf implementieren.
+- [x] On-Premise- und Offlinebetrieb überspringen die SaaS-Lizenzprüfung.
 
 **Abnahme:** Neue Organisationen können gemäß Plan angelegt werden; ein Planwechsel aktualisiert Kontingente ohne Mandantenüberschneidung.
 
