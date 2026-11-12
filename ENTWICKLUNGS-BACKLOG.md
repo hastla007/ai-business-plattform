@@ -156,12 +156,12 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 
 ## Noch offen
 
-Der CI-Lauf hat Composer-Installation/Validierung, PHP-/JS-/Python-Syntax, Docker-Build, beide Compose-Konfigurationen, frische Migration, Upgradepfad und PHPUnit auf PostgreSQL/pgvector bestanden. Ein Upgrade aus einer veröffentlichten Vorversion und produktive On-Prem/SaaS-Abnahmen bleiben offen.
+Der CI-Lauf 26 hat Composer-Installation/Validierung, Secret-Scan, PHP-/JS-/Python-Syntax, Docker-Build, beide Compose-Konfigurationen, frische Migration, Rollback und erneute Migration, PHPUnit auf PostgreSQL/pgvector sowie On-Prem-Installation und Backup-/Restore-Smoke mit Datenbank, Quelldatei, Vektor und Chatverlauf bestanden. Ein Upgrade aus einer veröffentlichten Vorversion sowie produktive On-Prem-/SaaS-Abnahmen bleiben offen.
 
 ## Gemeinsame Definition of Done
 
 - [x] Neue und vorhandene API-Routen, Rollen, Request-/Response-Beispiele und Fehlercodes sind in `docs/API.md` dokumentiert.
 - [x] Berechtigungsänderungen sind mit erlaubten und verweigerten Feature-Tests abgesichert, einschließlich Quelldownload und Re-Indexierungsrolle.
 - [ ] Migrationen funktionieren auf leerer Datenbank und mit einer unterstützten Vorversion.
-- [ ] Keine Secrets, personenbezogenen Inhalte oder vollständigen Prompts in Logs oder Commits.
-- [ ] Die Entwickler-Checkliste wird erst nach Code und Abnahme aktualisiert.
+- [x] Keine Secrets, personenbezogenen Inhalte oder vollständigen Prompts in Logs oder Commits (Secret-Scan und Review der Request-Logs ohne Prompt-/Inhaltsfelder).
+- [x] Die Entwickler-Checkliste wird nach Code und CI-Abnahme aktualisiert.
