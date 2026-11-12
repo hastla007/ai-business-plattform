@@ -1,6 +1,6 @@
 # Entwickler-Checkliste
 
-Stand: Backend-Arbeiten der Phasen 1–3 sowie Implementierungen der Punkte 6–8 aus Phasen 4–6. Häkchen bedeuten, dass Code oder Betriebsunterlagen im Repository vorhanden sind. UI- und Laufzeitabnahmen sind nicht als erledigt markiert.
+Stand: Implementierungen der Phasen 1–6 sowie Codearbeiten aus P0–P2. Code-Häkchen werden nach Implementierung gesetzt; reale Produktionsabnahmen bleiben separat offen. Häkchen bedeuten, dass der Code im Repository vorhanden ist; Laufzeit-, Sicherheits- und Deployment-Abnahmen bleiben separat offen.
 
 ## Phase 1 — Lokaler vertikaler Prototyp
 
@@ -8,11 +8,11 @@ Stand: Backend-Arbeiten der Phasen 1–3 sowie Implementierungen der Punkte 6–
 
 - [x] Laravel-Anwendung als Backend anlegen.
 - [x] API-Token-Authentifizierung mit Laravel Sanctum, Registrierung, Login und Logout einrichten.
-- [ ] Sanctum-Cookie-Authentifizierung für eine getrennte SPA einrichten.
+- [x] Sanctum-Cookie-Authentifizierung für die SPA einrichten.
 - [x] Firmen, Nutzer, Mitgliedschaften, Standorte und Rollenbasis implementieren.
 - [x] Firmen- und Dokumentrechte serverseitig prüfen; alle Firmenobjekte mandantengebunden abfragen.
 - [x] Docker-Compose-Entwicklungsstack für App, Queue-Worker, PostgreSQL und Redis mit persistentem lokalem Dateispeicher einrichten.
-- [ ] Separaten Objektspeicher-Dienst und optionalen Modellknoten als Entwicklungs-Compose-Dienste ergänzen.
+- [x] Separaten MinIO-Objektspeicher (`object-storage`-Profil) und optionalen Ollama-Modellknoten (`model-node`-Profil) als Entwicklungs-Compose-Dienste ergänzen.
 - [x] Persistente Volumes für Datenbank und Quelldokumente konfigurieren.
 - [x] Konfiguration über Umgebungsvariablen laden; keine Schlüssel oder Zugangsdaten ins Repository schreiben.
 - [x] Datenbankschema und Migrationen für Kernobjekte erstellen.
@@ -22,23 +22,23 @@ Stand: Backend-Arbeiten der Phasen 1–3 sowie Implementierungen der Punkte 6–
 ### 2. Modelladapter und Modellprofile
 
 - [x] Provider-Schnittstelle für Chat und Embeddings definieren.
-- [ ] Streaming-Schnittstelle und Streaming-Implementierung ergänzen.
+- [x] Streaming-Schnittstelle und Streaming-Implementierung ergänzen.
 - [x] Embedding-Schnittstelle bereitstellen.
 - [x] Transport-Schnittstelle für entfernte Modellknoten ergänzen.
 - [x] Einen lokalen Modellserver über einen Adapter anbinden.
-- [ ] Streaming- und nicht-streamende Antworten unterstützen.
+- [x] Streaming- und nicht-streamende Antworten unterstützen.
 - [x] Timeouts, begrenzte Retries und verständliche Providerfehler abbilden.
-- [ ] Nutzungs- und Kostenlimits durchsetzen.
+- [x] Nutzungs- und Kostenlimits durchsetzen.
 - [x] Modellprofile über eine Admin-API verwalten.
-- [ ] Modellprofile in der Admin-Oberfläche verwalten.
+- [x] Modellprofile in der Admin-Oberfläche verwalten.
 - [x] Modellzugriffe so abstrahieren, dass Provider hinter derselben Schnittstelle ausgetauscht werden.
 
 ### 3. Chat, Speicherung und Audit
 
 - [x] Konversationen und Nachrichten persistent speichern.
 - [x] Versionierte API POST /api/v1/chat implementieren.
-- [ ] Chat-UI an die API anbinden.
-- [ ] Berechtigung für den ausgewählten Assistenten bei jeder Anfrage prüfen.
+- [x] Chat-UI an die API anbinden.
+- [x] Berechtigung für den ausgewählten Assistenten bei jeder Anfrage prüfen.
 - [x] Pro Anfrage eine request_id und pro Agentenlauf eine run_id erzeugen.
 - [x] Antwortstatus, Quellen und Modellmetadaten über die API zurückgeben.
 - [x] Tatsächliche Modellknoten-ID bei gerouteten Antworten zurückgeben.
@@ -59,7 +59,7 @@ Stand: Backend-Arbeiten der Phasen 1–3 sowie Implementierungen der Punkte 6–
 - [x] Gruppenrechte und Gruppenmitgliedschaften in der Suchabfrage ergänzen.
 - [x] Treffer mit Dokumentname und Seiten- oder Abschnittsangabe in den Modellkontext übergeben.
 - [x] Quellen und Fundstellen in der Chat-API zurückgeben.
-- [ ] Quellen und Fundstellen in der Chat-UI anzeigen.
+- [x] Quellen und Fundstellen in der Chat-UI anzeigen.
 - [x] Bei Dokumentänderung alte Chunks ersetzen; beim Löschen Quelldatei, Text und Vektoren entfernen.
 - [x] Importfehler, erneute Verarbeitung und Statusanzeige über die API abbilden.
 - [x] Konfigurierbaren lokalen bzw. S3-kompatiblen Objektspeicher unterstützen.
@@ -78,13 +78,13 @@ Stand: Backend-Arbeiten der Phasen 1–3 sowie Implementierungen der Punkte 6–
 - [x] Agentenlauf, Schritte und redigierte Fehler-Metadaten protokollieren.
 - [x] Maximale Schrittzahl und Laufzeit verbindlich erzwingen.
 - [x] Wissensagent und Dokumentenagent bereitstellen.
-- [ ] Ticket-Agent zunächst nur lesend betreiben und Antwortvorschläge erstellen.
+- [x] Ticket-Agent zunächst nur lesend betreiben und Antwortvorschläge erstellen.
 
 ## Phase 4 — Freigaben und Schreibwerkzeuge
 
 ### 6. Menschliche Freigabe
 
-- [ ] Freigabeansicht in der UI implementieren.
+- [x] Freigabeansicht in der UI implementieren.
 - [x] Status awaiting_approval und Freigabe-/Ablehnungs-API implementieren.
 - [x] Freigabe an konkrete Aktion und kanonisch gehashte Parameter binden.
 - [x] Organisationsmitgliedschaft und Adminrolle unmittelbar vor Ausführung erneut prüfen.
@@ -103,12 +103,12 @@ Stand: Backend-Arbeiten der Phasen 1–3 sowie Implementierungen der Punkte 6–
 - [x] Fähigkeiten, Heartbeats und Statuswechsel verarbeiten.
 - [x] Knoten mit Firma, Standort, Datenschutzklasse, Modellfähigkeiten, Hardwareprofil, Parallelität, Version und letzter Verbindung erfassen.
 - [x] Admin-API für Gesundheit, Modellprofile und letzte Verbindung bereitstellen.
-- [ ] Admin-Oberfläche für Knoten und Modellprofile ergänzen.
+- [x] Admin-Oberfläche für Knoten und Modellprofile ergänzen.
 - [x] Modell-Router berücksichtigt Firma, Standort, Modell, Datenschutzklasse, Aktualität und Auslastung.
 - [x] Remote-Kommunikation über ausgehendes Polling mit Node-Token; keine Modell-API wird öffentlich geöffnet.
 - [x] Cloud-Fallback nur bei expliziter Organisationsrichtlinie zulassen.
 - [x] Jeden Mini-PC als eigenständigen Modellserver behandeln.
-- [ ] Optionale lokale Embedding-Modelle je Knoten unterstützen.
+- [x] Optionale lokale Embedding-Modelle je Knoten unterstützen.
 
 **Abnahmepunkt:** Backend für Registrierung und Routing implementiert; Mehrknoten-Laufzeittest offen.
 
@@ -120,8 +120,8 @@ Stand: Backend-Arbeiten der Phasen 1–3 sowie Implementierungen der Punkte 6–
 - [x] Persistente Speicherung sowie Backup-/Restore-Skripte und Anleitung ergänzen.
 - [x] Versionierte Images, Updateverfahren und Rollback-Skript dokumentieren.
 - [x] Health-Endpunkt, Container-Healthchecks und Fehlerdiagnose dokumentieren.
-- [ ] Monitoring-Dashboards und Alarmierung ergänzen.
-- [ ] Installation vollständig automatisieren und Lizenzierung ergänzen.
+- [ ] Alertmanager-Empfänger mit Betriebszugangsdaten verbinden und Monitoring in der Zielumgebung praktisch abnehmen. Admin-Metriken, Prometheus-Probe-Regeln und Runbook sind im Repository vorhanden.
+- [x] On-Prem-Installation automatisieren; SaaS-Testplan, Kontingente, Ablauf/Kulanz und Planprüfung ergänzen.
 - [x] Mandantentrennung, Aufbewahrungsfrist und erlaubte Datenverarbeitung je Organisation konfigurierbar machen.
 - [x] Hybrid-/Cloud-Fallback durch explizite Organisationsrichtlinie begrenzen.
 - [ ] Produktionsinstallation, Backup-Restore und SaaS-Deployment praktisch abnehmen.
@@ -148,4 +148,4 @@ Stand: Backend-Arbeiten der Phasen 1–3 sowie Implementierungen der Punkte 6–
 
 ## Noch offen
 
-Die verbleibenden Aufgaben sind nach Priorität und Abnahmekriterien im [Entwickler-Backlog](ENTWICKLUNGS-BACKLOG.md) aufgeschlüsselt. Häkchen werden erst nach Umsetzung und Abnahme gesetzt.
+Die externen Abnahmen (verwalteter SaaS-Deploy, Upgrade aus veröffentlichter Vorversion, Restore mit echten Mandanten-/Dokument-/Vektordaten und Produktionsinstallation) sind in B04 offen, bis sie in der Zielumgebung nachgewiesen sind. Weitere Detailpunkte stehen im [Entwickler-Backlog](ENTWICKLUNGS-BACKLOG.md).

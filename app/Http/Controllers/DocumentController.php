@@ -14,6 +14,13 @@ class DocumentController extends Controller {
     ->orWhereIn('group_id',\Illuminate\Support\Facades\DB::table('group_memberships')->select('group_id')->where('organization_id',$org)->where('user_id',$user));
   })->latest()->paginate(25);
  }
+ public function reindex(Request $r){
+  $org=(int)$r->attributes->get('organization_id');
+  abort_unless(\App\Models\ModelProfile::where('organization_id',$org)->where('is_active',true)->exists(),422,'An active model profile is required.');
+  $ids=Document::where('organization_id',$org)->whereIn('status',['indexed','failed','queued'])->pluck('id');
+  foreach($ids as $id)IngestDocument::dispatch((int)$id)->onQueue('documents');
+  return response()->json(['queued'=>$ids->count()],202);
+ }
  public function store(Request $r){return $this->saveUpload($r,null);}
  public function update(Request $r,Document $document){$this->authorizeDocument($r,$document);return $this->saveUpload($r,$document);}
  private function saveUpload(Request $r,?Document $old){
@@ -27,7 +34,7 @@ class DocumentController extends Controller {
   $file=$d['file'];$hash=hash_file('sha256',$file->getRealPath());
   $disk=config('filesystems.default','local');$path=Storage::disk($disk)->putFileAs('organizations/'.$org,$file,Str::uuid().'.'.$file->getClientOriginalExtension());
   if($old){
-   Storage::disk($old->disk)->delete($old->path);$old->chunks()->delete();
+   Storage::disk($old->disk)->delete($old->path);
    $old->update(['path'=>$path,'name'=>$file->getClientOriginalName(),'content_hash'=>$hash,'version'=>$old->version+1,'status'=>'queued','error_message'=>null,'mime_type'=>$file->getMimeType(),'size'=>$file->getSize()]);
    $document=$old;
   }else{
@@ -38,9 +45,23 @@ class DocumentController extends Controller {
  }
  private function authorizeDocument(Request $r,Document $d){
   abort_unless((int)$d->organization_id===(int)$r->attributes->get('organization_id'),404);
-  if($d->access_scope==='owner')abort_unless((int)$d->created_by===(int)$r->user()->id,403);
-  if($d->access_scope==='group')abort_unless(Group::whereKey($d->group_id)->whereHas('members',fn($q)=>$q->where('users.id',$r->user()->id))->exists(),403);
-  if($d->access_scope==='organization')abort_unless(in_array($r->attributes->get('organization_role'),['owner','admin'],true),403);
+  $admin=in_array($r->attributes->get('organization_role'),['owner','admin'],true);
+  if($d->access_scope==='owner')abort_unless($admin||(int)$d->created_by===(int)$r->user()->id,403);
+  if($d->access_scope==='group')abort_unless($admin||((int)$d->created_by===(int)$r->user()->id&&Group::where('organization_id',$d->organization_id)->whereKey($d->group_id)->whereHas('members',fn($q)=>$q->where('users.id',$r->user()->id))->exists()),403);
+  if($d->access_scope==='organization')abort_unless($admin,403);
+ }
+ public function source(Request $r,Document $document){
+  abort_unless((int)$document->organization_id===(int)$r->attributes->get('organization_id'),404);
+  $user=(int)$r->user()->id;$admin=in_array($r->attributes->get('organization_role'),['owner','admin'],true);
+  $allowed=match($document->access_scope){
+   'organization'=>true,
+   'owner'=>$admin||(int)$document->created_by===$user,
+   'group'=>$admin||\Illuminate\Support\Facades\DB::table('group_memberships')->where('organization_id',$document->organization_id)->where('group_id',$document->group_id)->where('user_id',$user)->exists(),
+   default=>false
+  };
+  abort_unless($allowed,404);
+  abort_unless(Storage::disk($document->disk)->exists($document->path),404);
+  return Storage::disk($document->disk)->download($document->path,$document->name);
  }
  public function destroy(Request $r,Document $document){
   $this->authorizeDocument($r,$document);Storage::disk($document->disk)->delete($document->path);$document->delete();return response()->noContent();

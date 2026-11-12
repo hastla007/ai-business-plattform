@@ -1,6 +1,6 @@
 FROM composer:2 AS vendor
 WORKDIR /app
-COPY composer.json ./
+COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --prefer-dist --no-progress --no-scripts
 COPY . .
 RUN composer dump-autoload --classmap-authoritative --no-dev
@@ -12,8 +12,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev libzi
  && rm -rf /var/lib/apt/lists/*
 WORKDIR /var/www/html
 COPY --from=vendor /app /var/www/html
-COPY deploy/entrypoint.sh /usr/local/bin/engine-entrypoint\nCOPY deploy/www.conf /usr/local/etc/php-fpm.d/zz-engine.conf
-RUN chmod +x /usr/local/bin/engine-entrypoint && chown -R www-data:www-data storage bootstrap/cache
+COPY deploy/entrypoint.sh /usr/local/bin/engine-entrypoint
+COPY deploy/www.conf /usr/local/etc/php-fpm.d/zz-engine.conf
+RUN mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs storage/app/public bootstrap/cache \
+ && chmod +x /usr/local/bin/engine-entrypoint \
+ && chown -R www-data:www-data storage bootstrap/cache
 USER www-data
 EXPOSE 9000
 ENTRYPOINT ["engine-entrypoint"]

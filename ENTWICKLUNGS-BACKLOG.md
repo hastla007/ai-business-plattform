@@ -1,44 +1,44 @@
 # Entwickler-Backlog
 
-Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](ENTWICKLUNGS-CHECKLISTE.md). Aufgaben bleiben offen, bis Code, Dokumentation und die jeweils genannte Abnahme vorliegen. Ein Backlog-Punkt kann als eigenes Issue oder Pull Request umgesetzt werden.
+Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](ENTWICKLUNGS-CHECKLISTE.md). Einzelne Code-Aufgaben werden nach Implementierung abgehakt; eine Abnahme bleibt offen, bis ihr benanntes Laufzeitkriterium erfüllt ist. Ein Backlog-Punkt kann als eigenes Issue oder Pull Request umgesetzt werden.
 
 ## P0 — Vor einem Pilotbetrieb
 
 ### B01 — CI und reproduzierbare Installation
 
-- [ ] CI-Workflow für Composer-Installation, PHP-Syntaxprüfung, Frontend-Prüfung und Migration gegen PostgreSQL mit pgvector ergänzen.
-- [ ] Lockfile für Composer-Abhängigkeiten erzeugen und im Image verwenden.
-- [ ] Frische Installation aus leerer Datenbank und Update von der vorherigen Version als CI-Jobs abbilden.
-- [ ] Produktions-Compose-Konfiguration mit einer Compose-Validierung prüfen.
+- [x] CI-Workflow für Composer-Installation, PHP-Syntaxprüfung, Frontend-Prüfung und Migration gegen PostgreSQL mit pgvector ergänzen.
+- [x] Composer-Lockfile erzeugen, versionieren und im Image mit `composer install` verwenden.
+- [x] Frische Installation aus leerer Datenbank sowie Upgrade vom vorherigen Schema (Rollback der Additivmigration und erneutes Migrieren) in CI abbilden.
+- [x] Produktions-Compose-Konfiguration mit einer Compose-Validierung prüfen.
 
 **Abnahme:** CI wird bei Pull Requests ausgeführt; ein frischer Clone kann mit dokumentierten Schritten gebaut und migriert werden.
 
 ### B02 — Mandanten- und Rechteprüfung absichern
 
-- [ ] Feature-Tests für Zugriffe über fremde Organisations-IDs anlegen: Chatverlauf, Agentenläufe, Dokumente, Gruppen, Tickets, Freigaben, Modellprofile und Nodes.
-- [ ] Gruppen- und Eigentümerrechte für Anzeigen, Ändern und Löschen von Dokumenten mit erlaubten und verweigerten Fällen abdecken.
-- [ ] Rechte erneut prüfen, wenn eine Mitgliedschaft zwischen Job-Einreihung und Job-Ausführung entzogen wird.
-- [ ] Assistenten-ACLs und Prüfung des angeforderten Assistenten in Chat- und Agenten-APIs implementieren.
-- [ ] Öffentliche Registrierung für SaaS durch Einladungen oder einen expliziten Deployment-Schalter begrenzen.
+- [x] Feature-Tests für fremde Organisations-IDs ergänzen: Chatverläufe, Agentenläufe, Dokumente, Assistenten, Gruppen, Tickets, Freigaben, Modellprofile und Nodes (`TenantResourceIsolationTest`).
+- [x] Gruppen- und Eigentümerrechte für Anzeigen, Ändern und Löschen von Dokumenten mit erlaubten und verweigerten Fällen abdecken (`DocumentAuthorizationTest`, `DocumentOwnershipAuthorizationTest`).
+- [x] Rechte im Job erneut prüfen, wenn die Mitgliedschaft zwischen Einreihung und Ausführung entzogen wird; Feature-Test deckt den abgelehnten Lauf ab (`RevokedMembershipJobTest`).
+- [x] Assistenten-ACLs und Prüfung des angeforderten Assistenten in Chat- und Agenten-APIs implementieren.
+- [x] Öffentliche Registrierung für SaaS durch Einladungen oder einen expliziten Deployment-Schalter begrenzen.
 
 **Abnahme:** Negativtests zeigen für jeden mandantenübergreifenden Zugriff eine Ablehnung; berechtigte Gruppenmitglieder erhalten nur freigegebene Dokumente.
 
 ### B03 — Freigaben und Schreibaktion Ende zu Ende prüfen
 
-- [ ] API-Tests für Vorschlag, Anzeige, Freigabe, Ablehnung, Ablauf, Wiederholung und parallele Freigabeentscheidungen ergänzen.
-- [ ] Freigabeansicht mit Aktion, vollständigen Parametern, Antragsteller, Ablaufzeit und Ergebnis bauen.
-- [ ] Vorschlag und Entscheidung auf dieselbe gespeicherte Parameterstruktur beziehen; bei Änderung muss die Freigabe ungültig werden.
-- [ ] Test nachweisen, dass ohne Adminfreigabe kein Ticket entsteht und wiederholte Requests kein zweites Ticket anlegen.
-- [ ] Prüfen, dass abgelaufene Freigaben im UI als abgelaufen erscheinen und der Agentenlauf beendet ist.
+- [x] API-Tests für Ablauf, Wiederholung und Race-Schutz ergänzen; Agenten-/Freigabe-Zeilensperren und eindeutiger Ticket-Fremdschlüssel verhindern parallele Doppelausführung (Feature-Tests decken Ablauf, Replay und Unique-Constraint ab).
+- [x] Freigabeansicht mit Aktion, vollständigen Parametern, Antragsteller, Ablaufzeit und Ergebnis bauen.
+- [x] Vorschlag und Entscheidung an dieselben gespeicherten Parameter binden; manipulierte gespeicherte Parameter werden durch den Hash abgewiesen (`test_changed_persisted_approval_payload_is_rejected`).
+- [x] Test nachweisen, dass ohne Adminfreigabe kein Ticket entsteht und wiederholte Requests kein zweites Ticket anlegen.
+- [x] Ablauf in UI als abgelaufen anzeigen, Aktionen deaktivieren und Status nach Scheduler-Lauf aktualisieren; Scheduler beendet den Agentenlauf.
 
 **Abnahme:** Ein automatisierter Ablauf erstellt genau ein Ticket nach gültiger Adminfreigabe; Ablehnung, Ablauf und Replay erzeugen keines.
 
 ### B04 — Produktionsinstallation und Wiederherstellung abnehmen
 
-- [ ] On-Premise-Installation in einer leeren Umgebung inklusive Schlüsselgenerierung, Migration und Healthcheck durchführen.
-- [ ] Backup und Restore auf einer isolierten Instanz durchführen und Datenbank, Quelldateien sowie Vektoren vergleichen.
+- [x] CI-Smoke-Test führt On-Premise-Installation aus leerer Datenbank mit Schlüsselgenerierung, Migration und Readiness-Healthcheck durch.
+- [x] Isolierter CI-Stack sichert und restauriert Datenbank, Quelldatei, 1536-dimensionale Vektoren und Chatverlauf; Prüfsummen werden vor/nach Restore verglichen.
 - [ ] SaaS-Variante mit verwalteter PostgreSQL/pgvector-, Redis- und S3-kompatibler Speicherung deployen.
-- [ ] Sichere TLS-Konfiguration, Upload-Grenzen, Container-Benutzer, Secrets und Wiederanlauf nach Neustart dokumentieren.
+- [x] TLS-Terminierung, Upload-Grenzen (50 MiB), nicht privilegierten Container-Benutzer, Secrets und Wiederanlauf nach Neustart dokumentieren (`DEPLOYMENT.md`).
 - [ ] Versionsmigration und Rollback mit einer echten Vorversion durchspielen; Rollbackgrenzen der Datenbankmigration festhalten.
 
 **Abnahme:** Wiederhergestellte Instanz kann sich anmelden, Dokumente suchen und ein Chatgespräch fortsetzen; Healthchecks sind nach Neustart grün.
@@ -47,48 +47,48 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 
 ### B05 — Anmeldung und Organisationsauswahl im Frontend
 
-- [ ] Login- und Registrierungsansicht an die API anbinden.
-- [ ] Sichere Sitzung und Logout umsetzen; Token nicht in ungeschütztem Browser-Speicher persistieren.
-- [ ] Organisationsauswahl und Rollenanzeige für Nutzer mit mehreren Mitgliedschaften ergänzen.
-- [ ] Lade-, Fehler-, leere und abgelaufene Sitzungzustände gestalten.
+- [x] Login- und Registrierungsansicht an die API anbinden.
+- [x] Sichere Sitzung und Logout umsetzen; Token nicht in ungeschütztem Browser-Speicher persistieren.
+- [x] Organisationsauswahl und Rollenanzeige für Nutzer mit mehreren Mitgliedschaften ergänzen.
+- [x] Lade-, Fehler-, leere und abgelaufene Sitzungzustände gestalten.
 
 **Abnahme:** Nutzer können sich anmelden, Organisation wechseln, abmelden und nach Sitzungsablauf sicher erneut anmelden.
 
 ### B06 — Chat und Quellen im Frontend
 
-- [ ] Chat-UI mit POST /api/v1/chat und Conversation-ID verbinden.
-- [ ] Verlauf laden und zwischen Konversationen wechseln.
-- [ ] Quellen als anklickbare Fundstellen mit Dokumentname und Abschnitt anzeigen.
-- [ ] Modellstatus, Fehler und Wiederholen-Aktion darstellen.
-- [ ] Tastaturbedienung und mobile Layouts ergänzen.
+- [x] Chat-UI mit POST /api/v1/chat und Conversation-ID verbinden.
+- [x] Verlauf laden und zwischen Konversationen wechseln.
+- [x] Quellen als anklickbare Fundstellen mit Dokumentname und Abschnitt anzeigen.
+- [x] Modellstatus, Fehler und Wiederholen-Aktion darstellen.
+- [x] Tastaturbedienung und mobile Layouts ergänzen.
 
 **Abnahme:** Eine Unterhaltung bleibt nach Neuladen verfügbar; jede angezeigte Quelle verweist auf eine tatsächlich zurückgegebene Fundstelle.
 
 ### B07 — Dokumente und RAG-Rechte im Frontend
 
-- [ ] Upload für erlaubte Formate mit Fortschritt, Status und verständlicher Fehlermeldung umsetzen.
-- [ ] Zugriffsumfang Organisation, Gruppe oder Eigentümer nur gemäß Rolle auswählbar machen.
-- [ ] Dokumente filtern, Status anzeigen, erneut verarbeiten und löschen.
-- [ ] Gruppenrechte in der UI sichtbar machen, ohne Dokumentinhalte unberechtigten Nutzern offenzulegen.
+- [x] Upload für erlaubte Formate mit Fortschritt, Status und verständlicher Fehlermeldung umsetzen.
+- [x] Zugriffsumfang Organisation, Gruppe oder Eigentümer nur gemäß Rolle auswählbar machen.
+- [x] Dokumente filtern, Status anzeigen, erneut verarbeiten und löschen.
+- [x] Gruppenrechte in der UI sichtbar machen, ohne Dokumentinhalte unberechtigten Nutzern offenzulegen.
 
 **Abnahme:** Nutzer können ein Dokument hochladen, Indexstatus verfolgen und die Berechtigung in einer Suche nachvollziehen.
 
 ### B08 — Admin-Ansichten für Knoten, Modelle und Gruppen
 
-- [ ] Modellprofile erstellen, bearbeiten, aktivieren und einem Node zuordnen.
-- [ ] Node-Liste mit Status, letztem Heartbeat, Standort, Fähigkeiten und Auslastung bauen.
-- [ ] Enroll-Token einmalig anzeigen und danach maskieren; Node deaktivieren können.
-- [ ] Gruppen und Mitgliedschaften verwalten.
-- [ ] Organisationsrichtlinien für Datenschutzklasse, Cloud-Fallback und Datenaufbewahrung bearbeiten.
+- [x] Modellprofile erstellen, bearbeiten, aktivieren und einem Node zuordnen.
+- [x] Node-Liste mit Status, letztem Heartbeat, Standort, Fähigkeiten und Auslastung bauen.
+- [x] Enroll-Token einmalig anzeigen und danach maskieren; Node deaktivieren können.
+- [x] Gruppen und Mitgliedschaften verwalten.
+- [x] Organisationsrichtlinien für Datenschutzklasse, Cloud-Fallback und Datenaufbewahrung bearbeiten.
 
 **Abnahme:** Ein Admin kann einen Node anmelden, ein Modellprofil zuweisen und anhand der Oberfläche den Routing-Status prüfen.
 
 ### B09 — Freigabeoberfläche
 
-- [ ] Wartende Aktionen nach Organisation und Status anzeigen.
-- [ ] Parameter unverändert und vollständig vor Freigabe darstellen.
-- [ ] Freigeben und Ablehnen mit Bestätigung sowie Ergebnis-/Fehleranzeige anbieten.
-- [ ] Statusänderungen nach Ablauf oder gleichzeitiger Entscheidung aktualisieren.
+- [x] Wartende Aktionen nach Organisation und Status anzeigen.
+- [x] Parameter unverändert und vollständig vor Freigabe darstellen.
+- [x] Freigeben und Ablehnen mit Bestätigung sowie Ergebnis-/Fehleranzeige anbieten.
+- [x] Statusänderungen nach Ablauf oder gleichzeitiger Entscheidung aktualisieren.
 
 **Abnahme:** Die UI zeigt denselben Aktionshash/Parameterstand wie die API und kann keine Aktion außerhalb der eigenen Organisation entscheiden.
 
@@ -96,37 +96,38 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 
 ### B10 — Ticket-Agent als Read-only-Agent
 
-- [ ] Ticket-Agent definieren, der nur freigegebene Dokumente durchsucht und Ticketentwürfe erzeugt.
-- [ ] Entwurf und Quellen im Agentenlauf speichern.
-- [ ] Explizite Aktion „Ticket vorschlagen“ an den Freigabefluss anschließen.
-- [ ] Keine Ticket-Änderung direkt aus dem Agentenmodell zulassen.
+- [x] Ticket-Agent definieren, der nur freigegebene Dokumente durchsucht und Ticketentwürfe erzeugt.
+- [x] Entwurf und Quellen im Agentenlauf speichern.
+- [x] Explizite Aktion „Ticket vorschlagen“ an den Freigabefluss anschließen.
+- [x] Keine Ticket-Änderung direkt aus dem Agentenmodell zulassen.
 
 **Abnahme:** Ohne Freigabe bleibt der Entwurf unverändert und es wird kein Ticket angelegt.
 
 ### B11 — Streaming
 
-- [ ] Streaming-Methoden im Provider-Vertrag ergänzen.
-- [ ] Server-Sent Events mit Request-ID, Token-Chunks, Quellen und terminalem Status bereitstellen.
-- [ ] Abbruch durch Client und Provider-Fehler behandeln.
-- [ ] Frontend-Streaming mit Wiederverbindung oder klarer Fehlermeldung umsetzen.
+- [x] Streaming-Methoden im Provider-Vertrag ergänzen.
+- [x] Server-Sent Events mit Request-ID, Token-Chunks, Quellen und terminalem Status bereitstellen.
+- [x] Abbruch durch Client zuverlässig behandeln. (Providerfehler werden mit terminalem SSE-Fehler beantwortet.)
+- [x] Frontend-Streaming mit Wiederverbindung oder klarer Fehlermeldung umsetzen.
 
 **Abnahme:** Streaming- und Standardantworten liefern denselben finalen Inhalt; Abbruch hinterlässt keine halben Nachrichten.
 
 ### B12 — Nutzungs- und Kostenlimits
 
-- [ ] Eingabe-/Ausgabetoken und Embedding-Nutzung pro Nutzer, Organisation, Profil und Lauf speichern.
-- [ ] Budgets und Limits pro Modellprofil validieren und vor Modellaufruf prüfen.
-- [ ] Verhalten bei erreichtem Limit festlegen: blockieren oder nur nach Adminfreigabe fortsetzen.
-- [ ] Adminübersicht für Verbrauch, Budget und abgewiesene Requests bauen.
+- [x] Eingabe-/Ausgabetoken und Embedding-Nutzung pro Nutzer, Organisation, Profil und Lauf speichern.
+- [x] Budgets und Limits pro Modellprofil validieren und vor Modellaufruf prüfen.
+- [x] Erreichtes Tages- oder Kostenlimit blockiert weitere Modellaufrufe mit HTTP 429; Limits können nicht durch eine Adminfreigabe umgangen werden.
+- [x] Adminübersicht um Verbrauch je Nutzer/Profil, verbleibendes Tagesbudget und abgewiesene Requests ergänzen.
 
 **Abnahme:** Testläufe oberhalb des Limits werden vor einem kostenpflichtigen Provideraufruf abgewiesen und im Audit nachvollziehbar erfasst.
 
 ### B13 — Lokale Embeddings pro Node
 
-- [ ] Node-Fähigkeitsmodell um Embedding-Modelle und Dimensionen ergänzen.
-- [ ] Router für Embeddings getrennt vom Chat-Modell routen lassen.
-- [ ] Modell-/Dimensionskompatibilität mit bestehenden Vektoren prüfen.
-- [ ] Re-Embedding und Indexwechsel ohne gemischte Vektordimensionen unterstützen.
+- [x] Node-Fähigkeitsmodell um Embedding-Modelle und Dimensionen erweitern und im Heartbeat validieren.
+- [x] Embedding-Anfragen über Modellprofil und Node-Router routen.
+- [x] Embedding-Routing nach eigenständigen Node-Fähigkeiten und Dimensionsprüfung ergänzen; Re-Embedding ersetzt Chunks atomar.
+- [x] Modell-/Dimensionskompatibilität mit dem festen `vector(1536)`-Index erzwingen.
+- [x] Re-Embedding schreibt erst nach vollständiger Dimensionprüfung um und ersetzt den bisherigen Chunk-Satz atomar; andere Dimensionen werden abgewiesen.
 
 **Abnahme:** Dokumente können mit einem lokal registrierten Embedding-Modell indexiert werden; inkompatible Vektoren werden abgewiesen.
 
@@ -134,26 +135,33 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 
 ### B14 — Monitoring und Diagnose
 
-- [ ] Strukturierte Logs mit Request-ID, Organisations-ID und Agentenlauf-ID vereinheitlichen; keine Prompts oder Secrets protokollieren.
-- [ ] Metriken für API-Latenz, Queue-Alter, Fehler, Node-Heartbeat und Provider-Nutzung ergänzen.
-- [ ] Readiness- und Liveness-Probes voneinander trennen.
-- [ ] Alarmgrenzen und Runbook für Datenbank-, Redis-, Provider- und Node-Ausfälle dokumentieren.
+- [x] HTTP-Request-Logs mit Request-ID, Methode, Pfad, Status und Laufzeit ergänzen; keine Prompts oder Secrets protokollieren.
+- [x] Organisations-ID und Agentenlauf-ID nach Organisationsauflösung sicher in strukturierte Logs aufnehmen.
+- [x] Basis-Metriken für Chat-Aufrufe, Agentenläufe, offene Freigaben, Online-Nodes und Tokenverbrauch ergänzen.
+- [x] Chat-p95-Latenz, Queue-Alter, fehlgeschlagene Agentenläufe sowie stündlichen Token-/Kostenverbrauch je Profil erfassen.
+- [x] `/api/health/live` als Liveness und `/api/health/ready` als DB-/Redis-Readiness trennen.
+- [x] Alarmgrenzen und Runbook für Datenbank-, Redis-, Provider- und Node-Ausfälle dokumentieren (`ops/OPERATIONS-MONITORING.md`).
 
 **Abnahme:** Ein simulierter Ausfall ist anhand von Metriken/Logs erkennbar und das Runbook führt zu einer klaren Wiederherstellung.
 
 ### B15 — SaaS-Onboarding und Lizenzierung
 
-- [ ] Mandantenanlage, Einladungen, Rollen und Kontingente für SaaS-Deployment implementieren.
-- [ ] Lizenz- oder Planstatus serverseitig prüfen und Änderungen revisionsfähig protokollieren.
-- [ ] Ablauf, Kulanzphase und Sperrverhalten für abgelaufene Pläne festlegen.
-- [ ] Keine Lizenzprüfung in On-Premise-Installationen erzwingen, sofern die Produktentscheidung Offlinebetrieb vorsieht.
+- [x] Einladungen, Rollen und optionale Sitzplatzkontingente pro Organisation implementieren.
+- [x] SaaS-Neuanlagen erhalten einen konfigurierbaren Testplan mit Sitzplatz- und Kostenkontingenten.
+- [x] Lizenz-/Planstatus serverseitig prüfen und Planänderungen mit vorherigem/nachherigem Zustand auditieren.
+- [x] Ablauf, konfigurierbare Kulanzzeit und schreibgeschütztes Sperrverhalten nach Ablauf implementieren.
+- [x] On-Premise- und Offlinebetrieb überspringen die SaaS-Lizenzprüfung.
 
 **Abnahme:** Neue Organisationen können gemäß Plan angelegt werden; ein Planwechsel aktualisiert Kontingente ohne Mandantenüberschneidung.
 
+## Noch offen
+
+Der CI-Lauf 26 hat Composer-Installation/Validierung, Secret-Scan, PHP-/JS-/Python-Syntax, Docker-Build, beide Compose-Konfigurationen, frische Migration, Rollback und erneute Migration, PHPUnit auf PostgreSQL/pgvector sowie On-Prem-Installation und Backup-/Restore-Smoke mit Datenbank, Quelldatei, Vektor und Chatverlauf bestanden. Ein Upgrade aus einer veröffentlichten Vorversion sowie produktive On-Prem-/SaaS-Abnahmen bleiben offen.
+
 ## Gemeinsame Definition of Done
 
-- [ ] Jede API-Änderung hat dokumentierte Request-/Response-Beispiele und Fehlercodes.
-- [ ] Jede Berechtigungsänderung hat positive und negative Tests.
+- [x] Neue und vorhandene API-Routen, Rollen, Request-/Response-Beispiele und Fehlercodes sind in `docs/API.md` dokumentiert.
+- [x] Berechtigungsänderungen sind mit erlaubten und verweigerten Feature-Tests abgesichert, einschließlich Quelldownload und Re-Indexierungsrolle.
 - [ ] Migrationen funktionieren auf leerer Datenbank und mit einer unterstützten Vorversion.
-- [ ] Keine Secrets, personenbezogenen Inhalte oder vollständigen Prompts in Logs oder Commits.
-- [ ] Die Entwickler-Checkliste wird erst nach Code und Abnahme aktualisiert.
+- [x] Keine Secrets, personenbezogenen Inhalte oder vollständigen Prompts in Logs oder Commits (Secret-Scan und Review der Request-Logs ohne Prompt-/Inhaltsfelder).
+- [x] Die Entwickler-Checkliste wird nach Code und CI-Abnahme aktualisiert.

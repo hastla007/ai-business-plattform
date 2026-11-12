@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 class ApprovalController extends Controller {
- public function index(Request $r){return Approval::where('organization_id',$r->attributes->get('organization_id'))->latest()->paginate(25);}
+ public function index(Request $r){return Approval::with(['requester:id,name','approver:id,name'])->where('organization_id',$r->attributes->get('organization_id'))->latest()->paginate(25);}
  public function tickets(Request $r){return Ticket::where('organization_id',$r->attributes->get('organization_id'))->latest()->paginate(25);}
  public function propose(Request $r,AgentRun $run){
   $org=(int)$r->attributes->get('organization_id');
