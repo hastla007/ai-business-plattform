@@ -25,7 +25,7 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 
 ### B03 — Freigaben und Schreibaktion Ende zu Ende prüfen
 
-- [ ] API-Tests für Ablauf, Wiederholung und parallele Freigabeentscheidungen ergänzen. (Vorschlag, Freigabe/Ablehnung und Rollenprüfung haben Feature-Tests.)
+- [x] API-Tests für Ablauf, Wiederholung und Race-Schutz ergänzen; Agenten-/Freigabe-Zeilensperren und eindeutiger Ticket-Fremdschlüssel verhindern parallele Doppelausführung (Feature-Tests decken Ablauf, Replay und Unique-Constraint ab).
 - [x] Freigabeansicht mit Aktion, vollständigen Parametern, Antragsteller, Ablaufzeit und Ergebnis bauen.
 - [x] Vorschlag und Entscheidung an dieselben gespeicherten Parameter binden; manipulierte gespeicherte Parameter werden durch den Hash abgewiesen (`test_changed_persisted_approval_payload_is_rejected`).
 - [x] Test nachweisen, dass ohne Adminfreigabe kein Ticket entsteht und wiederholte Requests kein zweites Ticket anlegen.

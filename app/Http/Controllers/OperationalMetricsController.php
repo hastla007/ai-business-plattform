@@ -1,8 +1,8 @@
 <?php
-namespace App\\Http\\Controllers;
-use App\\Models\\Node;
-use Illuminate\\Http\\Request;
-use Illuminate\\Support\\Facades\\{DB,Schema};
+namespace App\Http\Controllers;
+use App\Models\Node;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\{DB,Schema};
 class OperationalMetricsController extends Controller {
  public function __invoke(Request $r){
   $org=(int)$r->attributes->get('organization_id');$since=now()->subDay();

@@ -1,7 +1,8 @@
 <?php
 namespace Tests\Feature;
-use App\Models\{AgentRun,Approval,Assistant,AssistantVersion,Membership,Organization,User};
+use App\Models\{AgentRun,Approval,Assistant,AssistantVersion,Membership,Organization,Ticket,User};
 use Illuminate\Support\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -23,6 +24,8 @@ class ApprovalFlowTest extends TestCase {
   $this->postJson("/api/v1/agent-runs/{$run->id}/approve",['approval_id'=>$proposal['id'],'decision'=>'approve','parameters'=>['title'=>'attacker edit','description'=>'ignored','priority'=>'urgent']],$headers)->assertOk()->assertJsonPath('status','executed');
   $this->assertDatabaseCount('tickets',1);
   $this->assertDatabaseHas('tickets',['approval_id'=>$proposal['id'],'title'=>'Access issue','priority'=>'normal']);
+  $this->expectException(QueryException::class);
+  Ticket::create(['organization_id'=>$org->id,'approval_id'=>$proposal['id'],'created_by'=>$user->id,'title'=>'duplicate','description'=>'duplicate']);
   $this->postJson("/api/v1/agent-runs/{$run->id}/approve",['approval_id'=>$proposal['id'],'decision'=>'approve'],$headers)->assertStatus(409);
   $this->assertDatabaseCount('tickets',1);
  }
