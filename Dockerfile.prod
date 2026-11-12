@@ -14,7 +14,9 @@ WORKDIR /var/www/html
 COPY --from=vendor /app /var/www/html
 COPY deploy/entrypoint.sh /usr/local/bin/engine-entrypoint
 COPY deploy/www.conf /usr/local/etc/php-fpm.d/zz-engine.conf
-RUN chmod +x /usr/local/bin/engine-entrypoint && chown -R www-data:www-data storage bootstrap/cache
+RUN mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs storage/app/public bootstrap/cache \
+ && chmod +x /usr/local/bin/engine-entrypoint \
+ && chown -R www-data:www-data storage bootstrap/cache
 USER www-data
 EXPOSE 9000
 ENTRYPOINT ["engine-entrypoint"]
