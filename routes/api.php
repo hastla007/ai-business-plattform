@@ -1,7 +1,9 @@
 <?php
 use App\Http\Controllers\{AgentController,ApprovalController,AuthController,ChatController,DocumentController,HealthController,ModelProfileController,NodeCommandController,NodeController,OrganizationSettingsController,AssistantAccessController,ConversationController,OrganizationMembersController,InvitationController,OperationalMetricsController};
 use Illuminate\Support\Facades\Route;
-Route::get('/health',HealthController::class);\nRoute::get('/health/live',[HealthController::class,'live']);\nRoute::get('/health/ready',HealthController::class);
+Route::get('/health',HealthController::class);
+Route::get('/health/live',[HealthController::class,'live']);
+Route::get('/health/ready',HealthController::class);
 Route::post('/v1/register',[AuthController::class,'register'])->middleware('throttle:5,1');
 Route::post('/v1/login',[AuthController::class,'login'])->middleware('throttle:10,1');
 Route::post('/v1/invitations/register',[InvitationController::class,'register'])->middleware('throttle:5,1');
@@ -27,7 +29,8 @@ Route::middleware(['auth:sanctum','organization'])->prefix('v1')->group(function
   Route::put('/groups/{group}/members/{user}',[\App\Http\Controllers\GroupController::class,'addMember']);
   Route::delete('/groups/{group}/members/{user}',[\App\Http\Controllers\GroupController::class,'removeMember']);
   Route::get('/approvals',[ApprovalController::class,'index']);
-  Route::get('/tickets',[ApprovalController::class,'tickets']);\n  Route::post('/documents/reindex',[DocumentController::class,'reindex']);
+  Route::get('/tickets',[ApprovalController::class,'tickets']);
+  Route::post('/documents/reindex',[DocumentController::class,'reindex']);
   Route::post('/agent-runs/{run}/approve',[ApprovalController::class,'decide']);
   Route::get('/nodes',[NodeController::class,'index']);
   Route::post('/nodes/enroll',[NodeController::class,'enroll']);
