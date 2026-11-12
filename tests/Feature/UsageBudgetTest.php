@@ -15,6 +15,7 @@ class UsageBudgetTest extends TestCase {
   try{app(UsageBudgetService::class)->reserve($org->id,$user->id,$profile,'6dd2160a-25c8-4fca-b8ef-00a8ca19f012',[['role'=>'user','content'=>str_repeat('a',160)]]);$this->fail('Budget should reject this reservation.');}
   catch(HttpException $e){$this->assertSame(429,$e->getStatusCode());}
   $this->assertDatabaseCount('usage_events',0);
+  $this->assertDatabaseHas('audit_events',['organization_id'=>$org->id,'action'=>'usage.rejected','request_id'=>'6dd2160a-25c8-4fca-b8ef-00a8ca19f012']);
  }
  public function test_successful_provider_usage_replaces_the_reserved_estimate():void {
   $org=Organization::create(['name'=>'Budget','slug'=>'budget-org-two','settings'=>['daily_token_limit'=>500]]);
