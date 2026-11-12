@@ -50,7 +50,7 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 - [x] Login- und Registrierungsansicht an die API anbinden.
 - [x] Sichere Sitzung und Logout umsetzen; Token nicht in ungeschütztem Browser-Speicher persistieren.
 - [x] Organisationsauswahl und Rollenanzeige für Nutzer mit mehreren Mitgliedschaften ergänzen.
-- [ ] Lade-, Fehler-, leere und abgelaufene Sitzungzustände gestalten.
+- [x] Lade-, Fehler-, leere und abgelaufene Sitzungzustände gestalten.
 
 **Abnahme:** Nutzer können sich anmelden, Organisation wechseln, abmelden und nach Sitzungsablauf sicher erneut anmelden.
 
@@ -60,7 +60,7 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 - [x] Verlauf laden und zwischen Konversationen wechseln.
 - [x] Quellen als anklickbare Fundstellen mit Dokumentname und Abschnitt anzeigen.
 - [x] Modellstatus, Fehler und Wiederholen-Aktion darstellen.
-- [ ] Tastaturbedienung und mobile Layouts ergänzen.
+- [x] Tastaturbedienung und mobile Layouts ergänzen.
 
 **Abnahme:** Eine Unterhaltung bleibt nach Neuladen verfügbar; jede angezeigte Quelle verweist auf eine tatsächlich zurückgegebene Fundstelle.
 
@@ -69,7 +69,7 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 - [x] Upload für erlaubte Formate mit Fortschritt, Status und verständlicher Fehlermeldung umsetzen.
 - [x] Zugriffsumfang Organisation, Gruppe oder Eigentümer nur gemäß Rolle auswählbar machen.
 - [x] Dokumente filtern, Status anzeigen, erneut verarbeiten und löschen.
-- [ ] Gruppenrechte in der UI sichtbar machen, ohne Dokumentinhalte unberechtigten Nutzern offenzulegen.
+- [x] Gruppenrechte in der UI sichtbar machen, ohne Dokumentinhalte unberechtigten Nutzern offenzulegen.
 
 **Abnahme:** Nutzer können ein Dokument hochladen, Indexstatus verfolgen und die Berechtigung in einer Suche nachvollziehen.
 
@@ -88,7 +88,7 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 - [x] Wartende Aktionen nach Organisation und Status anzeigen.
 - [x] Parameter unverändert und vollständig vor Freigabe darstellen.
 - [x] Freigeben und Ablehnen mit Bestätigung sowie Ergebnis-/Fehleranzeige anbieten.
-- [ ] Statusänderungen nach Ablauf oder gleichzeitiger Entscheidung aktualisieren.
+- [x] Statusänderungen nach Ablauf oder gleichzeitiger Entscheidung aktualisieren.
 
 **Abnahme:** Die UI zeigt denselben Aktionshash/Parameterstand wie die API und kann keine Aktion außerhalb der eigenen Organisation entscheiden.
 
@@ -97,7 +97,7 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 ### B10 — Ticket-Agent als Read-only-Agent
 
 - [x] Ticket-Agent definieren, der nur freigegebene Dokumente durchsucht und Ticketentwürfe erzeugt.
-- [ ] Entwurf und Quellen im Agentenlauf speichern.
+- [x] Entwurf und Quellen im Agentenlauf speichern.
 - [x] Explizite Aktion „Ticket vorschlagen“ an den Freigabefluss anschließen.
 - [x] Keine Ticket-Änderung direkt aus dem Agentenmodell zulassen.
 
@@ -107,7 +107,7 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 
 - [x] Streaming-Methoden im Provider-Vertrag ergänzen.
 - [x] Server-Sent Events mit Request-ID, Token-Chunks, Quellen und terminalem Status bereitstellen.
-- [ ] Abbruch durch Client zuverlässig behandeln. (Providerfehler werden mit terminalem SSE-Fehler beantwortet.)
+- [x] Abbruch durch Client zuverlässig behandeln. (Providerfehler werden mit terminalem SSE-Fehler beantwortet.)
 - [x] Frontend-Streaming mit Wiederverbindung oder klarer Fehlermeldung umsetzen.
 
 **Abnahme:** Streaming- und Standardantworten liefern denselben finalen Inhalt; Abbruch hinterlässt keine halben Nachrichten.

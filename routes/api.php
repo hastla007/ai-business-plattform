@@ -43,6 +43,7 @@ Route::middleware(['auth:sanctum','organization'])->prefix('v1')->group(function
  Route::delete('/conversations/{conversation}',[ConversationController::class,'destroy']);
  Route::post('/chat',ChatController::class);
  Route::get('/documents',[DocumentController::class,'index']);
+ Route::get('/documents/{document}/source',[DocumentController::class,'source']);
  Route::post('/documents',[DocumentController::class,'store']);
  Route::put('/documents/{document}',[DocumentController::class,'update']);
  Route::delete('/documents/{document}',[DocumentController::class,'destroy']);

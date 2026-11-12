@@ -34,13 +34,14 @@ class ChatController extends Controller {
   $system=$version?->system_instructions??'Use authorized excerpts only for company facts. Cite sources with [S1]. If evidence is insufficient, say so.';
   $messages=array_merge([['role'=>'system','content'=>$system.($context?PHP_EOL.PHP_EOL.$context:'')]],$history);
   $reservation=$budget->reserve($org,(int)$user->id,$p,$rid,$messages);
-  $sourceList=collect($sources)->map(fn($s,$i)=>['ref'=>'S'.($i+1),'document'=>$s['document'],'locator'=>$s['locator']])->values();
+  $sourceList=collect($sources)->map(fn($s,$i)=>['ref'=>'S'.($i+1),'document_id'=>$s['document_id'],'document'=>$s['document'],'locator'=>$s['locator']])->values();
   if(!empty($d['stream'])){
    return response()->stream(function()use($model,$messages,$p,$reservation,$budget,$sourceList,$c,$org,$user,$rid,$assistant,$started){
     $content='';$meta=['usage'=>[],'model'=>$p->model,'node_id'=>null];
     $emit=function(string $event,array $data){echo 'event: '.$event.PHP_EOL.'data: '.json_encode($data,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES).PHP_EOL.PHP_EOL;if(ob_get_level()>0)@ob_flush();flush();};
     try{
      foreach($model->streamChat($messages,$p) as $part){
+      if(connection_aborted()){$budget->complete($reservation['event'],[],$reservation,true);return;}
       if(isset($part['delta'])){$content.=$part['delta'];$emit('delta',['text'=>$part['delta']]);}
       if(!empty($part['done']))$meta=array_merge($meta,$part);
      }
