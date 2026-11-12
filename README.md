@@ -24,11 +24,11 @@ Das Compose-Profil startet Laravel, Queue-Worker, PostgreSQL mit pgvector und Re
 
 ## Stand und Grenzen
 
-Die Checkliste markiert umgesetzte Backend-Arbeitspakete. Streaming, Admin-Oberfläche für Modellprofile, Gruppenrechte, gesonderter Objektspeicher, Node-Routing, SaaS-/On-Prem-Produktionshärtung und Abnahmetests sind noch offen. Der Chat-UI-Prototyp ist noch nicht mit diesen API-Routen verbunden. Compose verwendet Entwicklungswerte; Zugangsdaten und Schlüssel vor produktivem Betrieb ändern.
+Das Backend enthält Dokumentensuche, Freigabe-API, Node-Routing und Produktionspakete. Chat-, Dokument-, Freigabe- und Admin-Oberflächen sowie Streaming, Kostenlimits, Monitoring und praktische Produktionsabnahmen sind noch offen. Die Entwicklungs-Compose-Datei ist für lokale Entwicklung; für On-Premise/SaaS siehe [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Entwickler-Checkliste
 
-Siehe [ENTWICKLUNGS-CHECKLISTE.md](ENTWICKLUNGS-CHECKLISTE.md).
+Siehe [ENTWICKLUNGS-CHECKLISTE.md](ENTWICKLUNGS-CHECKLISTE.md) und den priorisierten [Entwickler-Backlog](ENTWICKLUNGS-BACKLOG.md).
 
 ## Phases 4–6 implementation
 

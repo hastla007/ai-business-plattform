@@ -148,5 +148,4 @@ Stand: Backend-Arbeiten der Phasen 1–3 sowie Implementierungen der Punkte 6–
 
 ## Noch offen
 
-- Browser-Oberflächen, Streaming, Assistenten-ACL, Nutzungs-/Kostenlimits, lokale Embeddings und Lizenzierung.
-- Laufzeitabnahmen für Migration, Freigabefluss, Remote-Knoten, On-Premise, SaaS sowie Backup/Restore.
+Die verbleibenden Aufgaben sind nach Priorität und Abnahmekriterien im [Entwickler-Backlog](ENTWICKLUNGS-BACKLOG.md) aufgeschlüsselt. Häkchen werden erst nach Umsetzung und Abnahme gesetzt.
