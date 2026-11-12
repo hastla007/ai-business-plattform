@@ -27,9 +27,9 @@ Dieser Backlog konkretisiert die offenen Punkte aus der [Entwickler-Checkliste](
 
 - [ ] API-Tests für Ablauf, Wiederholung und parallele Freigabeentscheidungen ergänzen. (Vorschlag, Freigabe/Ablehnung und Rollenprüfung haben Feature-Tests.)
 - [x] Freigabeansicht mit Aktion, vollständigen Parametern, Antragsteller, Ablaufzeit und Ergebnis bauen.
-- [ ] Vorschlag und Entscheidung auf dieselbe gespeicherte Parameterstruktur beziehen; bei Änderung muss die Freigabe ungültig werden.
+- [x] Vorschlag und Entscheidung an dieselben gespeicherten Parameter binden; manipulierte gespeicherte Parameter werden durch den Hash abgewiesen (`test_changed_persisted_approval_payload_is_rejected`).
 - [x] Test nachweisen, dass ohne Adminfreigabe kein Ticket entsteht und wiederholte Requests kein zweites Ticket anlegen.
-- [ ] Prüfen, dass abgelaufene Freigaben im UI als abgelaufen erscheinen und der Agentenlauf beendet ist.
+- [x] Ablauf in UI als abgelaufen anzeigen, Aktionen deaktivieren und Status nach Scheduler-Lauf aktualisieren; Scheduler beendet den Agentenlauf.
 
 **Abnahme:** Ein automatisierter Ablauf erstellt genau ein Ticket nach gültiger Adminfreigabe; Ablehnung, Ablauf und Replay erzeugen keines.
 
