@@ -1,0 +1,30 @@
+groups:
+  - name: ai-business-engine-health
+    rules:
+      - alert: ABEHealthProbeDown
+        expr: probe_success{job="health-probes"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "AI Business Engine health probe is failing"
+          description: "{{ $labels.instance }} did not return HTTP 200 for at least two minutes."
+          runbook: "ops/OPERATIONS-MONITORING.md"
+      - alert: ABEReadinessSlow
+        expr: probe_duration_seconds{job="health-probes",instance=~".*/ready"} > 2
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "AI Business Engine readiness probe is slow"
+          description: "{{ $labels.instance }} exceeded two seconds for ten minutes."
+          runbook: "ops/OPERATIONS-MONITORING.md"
+      - alert: ABEHealthProbeMissing
+        expr: absent(probe_success{job="health-probes"})
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "No AI Business Engine probes are being collected"
+          description: "Check Prometheus targets and the Blackbox Exporter."
+          runbook: "ops/OPERATIONS-MONITORING.md"

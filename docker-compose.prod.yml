@@ -35,6 +35,23 @@ services:
     restart: unless-stopped
     depends_on:
       app: { condition: service_healthy }
+  blackbox-exporter:
+    image: ${BLACKBOX_EXPORTER_IMAGE:-prom/blackbox-exporter:latest}
+    profiles: ["monitoring"]
+    command: ["--config.file=/etc/blackbox_exporter/config.yml"]
+    volumes: ["./ops/monitoring/blackbox.yml:/etc/blackbox_exporter/config.yml:ro"]
+    restart: unless-stopped
+  prometheus:
+    image: ${PROMETHEUS_IMAGE:-prom/prometheus:latest}
+    profiles: ["monitoring"]
+    command: ["--config.file=/etc/prometheus/prometheus.yml","--storage.tsdb.path=/prometheus"]
+    ports: ["127.0.0.1:9090:9090"]
+    volumes:
+      - "./ops/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro"
+      - "./ops/monitoring/alerts.yml:/etc/prometheus/alerts.yml:ro"
+      - prometheus_data:/prometheus
+    depends_on: [blackbox-exporter]
+    restart: unless-stopped
   nginx:
     build:
       context: .
@@ -45,3 +62,4 @@ services:
       app: { condition: service_healthy }
 volumes:
   engine_storage:
+  prometheus_data:

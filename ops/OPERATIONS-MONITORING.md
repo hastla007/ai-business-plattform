@@ -4,6 +4,16 @@
 
 Die Admin-API `GET /api/v1/admin/metrics` und der Bereich „Betriebsmetriken“ zeigen den Zeitraum der letzten 24 Stunden: Chat-Aufrufe, p95-Chat-Latenz, fehlgeschlagene Agentenläufe, älteste Queue-Nachricht, stündliche Token-/Kostenwerte, Nutzung pro Nutzer und Modellprofil, verbleibendes Tagesbudget und abgewiesene Limit-Requests. Der reguläre `GET /api/v1/metrics` bleibt auf aggregierte Organisationswerte begrenzt.
 
+## Optionale Prometheus-Probes und Regeln
+
+Mit dem Monitoring-Profil lassen sich Probes lokal oder im On-Prem-Stack starten:
+
+```sh
+docker compose -f docker-compose.prod.yml -f docker-compose.onprem.yml --profile monitoring up -d blackbox-exporter prometheus
+```
+
+Prometheus bindet nur an `127.0.0.1:9090`. Die Regeln in `ops/monitoring/alerts.yml` alarmieren bei ausgefallenen Live-/Readiness-Probes, langsamer Readiness und fehlenden Probe-Daten. Für Benachrichtigungen an Personen/Teams ist ein Alertmanager-Receiver mit den Zugangsdaten der Betriebsumgebung zu hinterlegen; keine Empfänger oder Tokens sind im Repository konfiguriert.
+
 ## Alarmgrenzen
 
 - **Readiness fehlgeschlagen:** `GET /api/health/ready` nicht 200 für 2 Minuten. Prüfe PostgreSQL und Redis, danach App-Logs und Verbindungen.

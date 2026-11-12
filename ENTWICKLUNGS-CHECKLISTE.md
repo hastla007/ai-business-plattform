@@ -120,7 +120,7 @@ Stand: Implementierungen der Phasen 1–6 sowie Codearbeiten aus P0–P2. Code-H
 - [x] Persistente Speicherung sowie Backup-/Restore-Skripte und Anleitung ergänzen.
 - [x] Versionierte Images, Updateverfahren und Rollback-Skript dokumentieren.
 - [x] Health-Endpunkt, Container-Healthchecks und Fehlerdiagnose dokumentieren.
-- [ ] Alarmierung in der Zielumgebung konfigurieren und Monitoring-Dashboard praktisch abnehmen. Metriken und Runbook sind im Code/Repo vorhanden.
+- [ ] Alertmanager-Empfänger mit Betriebszugangsdaten verbinden und Monitoring in der Zielumgebung praktisch abnehmen. Admin-Metriken, Prometheus-Probe-Regeln und Runbook sind im Repository vorhanden.
 - [x] On-Prem-Installation automatisieren; SaaS-Testplan, Kontingente, Ablauf/Kulanz und Planprüfung ergänzen.
 - [x] Mandantentrennung, Aufbewahrungsfrist und erlaubte Datenverarbeitung je Organisation konfigurierbar machen.
 - [x] Hybrid-/Cloud-Fallback durch explizite Organisationsrichtlinie begrenzen.

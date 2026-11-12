@@ -25,7 +25,7 @@ class SaaSPlanEnforcementTest extends TestCase {
   $this->postJson('/api/v1/register',['name'=>'New Tenant Admin','email'=>'new-admin@example.test','password'=>'a-very-secure-password','organization_name'=>'Trial Company'])->assertCreated();
   $org=Organization::where('name','Trial Company')->firstOrFail();$settings=$org->settings;
   $this->assertSame('trial',$settings['plan']);$this->assertSame('active',$settings['license_status']);$this->assertSame(9,$settings['max_users']);$this->assertSame(12345,$settings['monthly_cost_limit_micros']);
-  $this->assertTrue(now()->addDays(20)->lt(\\Illuminate\\Support\\Carbon::parse($settings['plan_expires_at'])));
+  $this->assertTrue(now()->addDays(20)->lt(\Illuminate\Support\Carbon::parse($settings['plan_expires_at'])));
  }
  public function test_on_premise_deployment_does_not_require_a_plan_license():void {
   config(['services.auth.deployment_mode'=>'onprem']);

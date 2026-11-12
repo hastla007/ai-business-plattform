@@ -27,6 +27,10 @@ Build and deploy the same `Dockerfile.prod` image with `docker-compose.prod.yml`
 
 These profiles are for local development only and use non-production default credentials.
 
+## Optional monitoring
+
+Start the local probe stack with `docker compose -f docker-compose.prod.yml -f docker-compose.onprem.yml --profile monitoring up -d blackbox-exporter prometheus`. Prometheus binds to localhost port 9090 and evaluates `ops/monitoring/alerts.yml`. Set `PROMETHEUS_IMAGE` and `BLACKBOX_EXPORTER_IMAGE` to pinned image digests for a production deployment. Connect Alertmanager to the notification receiver approved by the operator; this repository does not contain notification credentials.
+
 ## Backup and restore
 
 For on-premise, run `./ops/backup.sh`. It briefly stops application writes for a consistent PostgreSQL dump and local uploaded-file archive under `./backups`; services restart automatically afterward. Copy those files to protected off-host storage. Restore with `./ops/restore.sh database.sql files.tar.gz`. Restore replaces current data. Test recovery against an isolated deployment before relying on a backup. Managed database and object-store backups must use the provider's backup facilities.
