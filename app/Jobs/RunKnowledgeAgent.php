@@ -1,6 +1,6 @@
 <?php
 namespace App\Jobs;
-use App\Models\{AgentRun,AgentRunEvent,AssistantVersion,AuditEvent};
+use App\Models\{AgentRun,AgentRunEvent,AssistantVersion,AuditEvent,Membership};
 use App\Services\{KnowledgeRetriever,ModelProvider};
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,6 +16,7 @@ class RunKnowledgeAgent implements ShouldQueue {
   try{
    if($v->max_steps<2||$v->max_steps>3||$v->timeout_seconds>90)throw new \RuntimeException('Agent limits exceed runtime');
    set_time_limit((int)$v->timeout_seconds);
+   if(!Membership::where('organization_id',$run->organization_id)->where('user_id',$run->user_id)->exists())throw new \RuntimeException('Organization membership was revoked');
    $allowed=$v->allowed_tools??[];if(!in_array('search_knowledge',$allowed,true))throw new \RuntimeException('Tool not allowed');
    $arguments=$registry->validate('search_knowledge',['query'=>$run->input],$allowed,$run->organization_id);
    $sources=$search->search($arguments['query'],$run->organization_id,$run->user_id,6);

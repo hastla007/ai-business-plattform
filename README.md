@@ -17,6 +17,7 @@ Das Compose-Profil startet Laravel, Queue-Worker, PostgreSQL mit pgvector und Re
 - POST /api/v1/register: name, email, password (mindestens 12 Zeichen), organization_name
 - POST /api/v1/login: email und password
 - Bei geschützten Routen Bearer-Token und X-Organization-Id mitsenden.
+- Gruppenverwaltung: GET/POST /api/v1/groups sowie PUT/DELETE /api/v1/groups/{group}/members/{user} für Owner und Admins.
 - POST /api/v1/documents: multipart-Datei (txt, md, pdf oder docx)
 - POST /api/v1/chat: message und optional conversation_id
 - POST /api/v1/agents/{id}/runs: input; Status über GET /api/v1/agent-runs/{id} abfragen

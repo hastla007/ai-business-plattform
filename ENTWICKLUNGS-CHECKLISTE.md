@@ -60,7 +60,7 @@ Die Liste setzt die Projektbeschreibung in umsetzbare Arbeitspakete um. Der aktu
 - [x] Embeddings über den Provider erzeugen und zusammen mit Zugriffsmetadaten in PostgreSQL/pgvector speichern.
 - [x] Keyword- und Vektorsuche kombinieren.
 - [x] Firmen- und Dokumentrechte (Organisation oder Dokumenteigentümer) bereits in der Suchabfrage durchsetzen.
-- [ ] Gruppenrechte und Gruppenmitgliedschaften in der Suchabfrage ergänzen.
+- [x] Gruppenrechte und Gruppenmitgliedschaften in der Suchabfrage ergänzen.
 - [x] Treffer mit Dokumentname und Seiten- oder Abschnittsangabe in den Modellkontext übergeben.
 - [x] Quellen und Fundstellen in der Chat-API zurückgeben.
 - [ ] Quellen und Fundstellen in der Chat-UI anzeigen.
@@ -77,7 +77,7 @@ Die Liste setzt die Projektbeschreibung in umsetzbare Arbeitspakete um. Der aktu
 - [ ] Laufstatus queued, running, awaiting_approval, completed, failed und cancelled unterstützen.
 - [x] Längere Läufe als Queue-Jobs ausführen und ihren Zustand wiederherstellbar speichern.
 - [x] Werkzeugregister mit gespeichertem JSON-Schema und Parameterprüfung für search_knowledge implementieren.
-- [ ] Firmenmitgliedschaft unmittelbar vor jedem asynchronen Werkzeugaufruf erneut prüfen.
+- [x] Firmenmitgliedschaft unmittelbar vor jedem asynchronen Werkzeugaufruf erneut prüfen.
 - [x] Nur registrierte, eng begrenzte Werkzeuge ausführen; keine freien Shell-Befehle, beliebigen HTTP-Aufrufe oder direkten Datenbankzugriffe bereitstellen.
 - [x] search_knowledge(query) als erstes schreibgeschütztes Werkzeug implementieren.
 - [x] Agentenlauf, Schritte und Fehler mit redigierten Metadaten protokollieren.
